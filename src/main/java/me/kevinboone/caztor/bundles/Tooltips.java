@@ -1,0 +1,33 @@
+/*=========================================================================
+  
+  Caztor
+
+  Tooltips bundle 
+
+  Copyright (c)2021 Kevin Boone, GPLv3.0 
+
+=========================================================================*/
+package me.kevinboone.caztor.bundles;
+import java.util.*;
+
+public class Tooltips extends ListResourceBundle 
+  {
+  private Object[][] contents = 
+    {
+    {"back", "Go back"},
+    {"download_cancel", "Cancel download"},
+    {"download_folder", "Open download folder"},
+    {"home", "Go home"},
+    {"identity", "Manage identity"},
+    {"refresh", "Refresh page"},
+    {"stop", "Stop loading page"},
+    };
+
+  @Override
+  public Object[][] getContents() 
+     {
+     return contents;
+     }
+  }
+
+

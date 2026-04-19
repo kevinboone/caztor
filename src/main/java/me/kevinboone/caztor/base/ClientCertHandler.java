@@ -1,0 +1,24 @@
+/*=========================================================================
+  
+  Caztor
+
+  ClientCertHandler
+
+  Copyright (c)2026 Kevin Boone, GPLv3.0 
+
+=========================================================================*/
+package me.kevinboone.caztor.base;
+
+import java.net.*;
+import java.io.*;
+
+/** The interface governing UI elements that manage
+    identity.  Not to be confused with ClientCertManager. */
+public interface ClientCertHandler
+  {
+  /** Bring up a user interface element to manage the
+      identity associated with the URL. The URL may
+      not be valid: implementing classes should check.*/
+  public void manageIdentity (URL baseUri);
+  }
+

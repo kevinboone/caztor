@@ -1,0 +1,164 @@
+# Things to watch out for
+
+## TLS and certificate issues with Gemini
+
+There is _no_ TLS certificate check, not even trust-on-first-use.  Caztor uses
+encrypted TLS communication because Gemini demands it. However, most Gemini
+servers do not issue certificates that are validated by external authorities.
+So, rather than prompting the user to confirm every site, Caztor simply
+assumes every server certificate is fine. Is this a security problem?  Sure. If
+you're planning world domination, or think governments are spying on your
+communication, this isn't the software to use. 
+
+## Please be patient
+
+Most "small net" servers run on low-cost cloud hosts or in people's homes; they
+are often not very responsive.
+
+In order to keep the user interface moving, Caztor does all content-fetching
+asynchronously in background threads. It's not always easy to see if a
+download is still in progress, and this can cause problems with slow servers.
+
+To make things worse, there is no caching of any kind, either on disk or in
+memory.  The protocols Caztor supports do not allow content to be timestamped,
+so there is no robust way to implement a cache.  This means that Caztor makes
+more requests on the server than a regular web browser would.  Even the "back"
+button causes the previous page to be re-requested. 
+
+Please be patient.
+
+## Detecting the document format sometimes involves guesswork 
+
+Caztor displays text in Gemtext, plain text, and Markdown formats, Atom feeds,
+and popular image types.  
+
+Where the server provides a content type, Caztor will usually use it.  If the
+server doesn't, or can't, provide one, Caztor relies on filename extensions
+and guesswork.
+
+Sometimes Caztor will override a clear content type from the server, or a
+clear filename.  For example, when it receives a file using `nex`, with a
+filename ending in `.txt`, or where there is no filename, Caztor treats the
+file as "nex-flavoured text". This format is just like plain text, except that
+lines beginning with "=>" are treated as links, as with Gemtext. 
+
+In addition, because Gemini servers often don't report the MIME type of
+Markdown correctly, Caztor treats any file it retrieves whose name ends in
+`.md` as Markdown, regardless of the MIME type the server reports. 
+
+## Caztor only handles its own protocols
+
+Caztor only handles URLs with protocols `gemini://`, `spartan://`,
+`gopher://`, or `nex://`.  If a Gemtext document contains links to another kind
+of protocol that Java understands (`file:`, `http:...`) then Caztor delegates
+to the desktop. If you follow an `http` link, for example, that should invoke a
+Web browser; but, again, this is not under the control of Caztor. If the URL
+is not one that Java understands (e.g., `gophers:`) then Caztor will not even
+attempt to follow the link, not even by invoking the desktop. The reason is
+somewhat technical but, in essence, Java can't even construct an instance of
+`java.net.URL` containing the URI to pass to the desktop.
+
+## In-document search issues
+
+Text search is only case-insensitive, and forward.
+
+## Emoji support can be fiddly to set up
+
+The use of Unicode emojis is widespread in the Gemini world. To see these
+properly, you'll need to ensure your operating system has a font with the
+appropriate glyphs, like `Segoe UI Emoji` or `Noto Emoji`. 
+
+Because of a limitation in the Java Swing user interface, the document viewer
+and the user interface (menus, etc) have different font settings. While merely
+installing a font is sufficient to have the document viewer use it, 
+the user interface needs to be told specifically to use an emoji-aware font.
+This affects primarily bookmarks, which might contain emojis. For more
+information, see the documentation of `ui.control_font` in the 
+[configuration file](config_file.md) page. 
+
+The default values of `ui.control_font`, etc., include a reference to a
+font called `Emoji`. This (probably) isn't a real font name, but should
+match any font with "Emoji" in the name. If you install multiple fonts
+of this kind, you might have to edit the configuration to specify
+a particular one. 
+
+When displaying Gemtext, Caztor uses an arrow symbol to indicate a link that
+can be followed, as well as displaying the link text in a highlighted colour.
+If the first character of the link text is an emoji, then the link doesn't get
+the arrow -- if the author is using emojis to highlight links, the extra arrow
+would look odd.  
+
+## Character encoding issues
+
+Caztor has mostly been tested on platforms that use UTF-8 character encoding. 
+It should handle documents that it receives with other encodings, so long as
+the server indicates the encoding. However, it's less clear what will happen
+to transfers _from_ the client. 
+
+Even if the platform uses UTF-8, there's little to stop the user sending
+data to a server that can't cope with it. For example, the JVM will almost
+certainly let you enter multi-byte characters into the text entry dialog box,
+but that doesn't mean the server will understand them -- particularly Gopher.
+
+## Document font size affects only text 
+
+The main document font size, whether it's set in configuration 
+or by using ctrl+[ and ctrl+], only affects text. Images will always be
+displayed using the fixed size in the configuration, or full-sized if they
+are in a page of their own.
+
+## Gopher can be a bit awkward 
+
+The Gopher protocol was invented before the "modern" concept of a URL. Using
+contemporary URLs with Gopher servers is fraught with difficulty. Most web
+servers (and Gemini servers) don't really distinguish between a URL whose
+`path` component is empty, and one where the path is `/`. Gopher servers often
+do.
+
+That's awkward, because there needs to be _something_ to separate the
+components of a URL, and that something is usually a `/`.
+
+When interpreting a Gopher URL, Caztor struggles to tell the difference
+between a `/` that is part of a Gopher selector, and one that just separates
+URL components. You might need to try a Gopher URL with, and without, the
+leading `/` to get a response.
+
+## Streaming and media issues 
+
+None of the protocols that Caztor supports provide any information about
+the length of the data the server is sending. A stream (audio, video) by
+its very nature has no end; but Caztor can't distinguish a stream from a
+file it could, in principle, download to completion.
+
+Consequently, the user has to choose whether to download the file/stream,
+or stream it out to an external player. 
+
+## Styling issues
+
+You can switch themes at run-time, using the _Theme_ tab of the
+[Settings dialog](settings_dialog.md). However,
+not all themes apply all possible styles to all elements. If you do change
+themes at runtime, the results might not be exactly as they would be if you
+started Caztor from scratch. They should be similar, though.
+
+## Issues with XML documents
+
+In general, Caztor knows which kinds of document it can handle, and which it
+can't. If a server says a document is Markdown, for example, or the URL ends in
+`.md`, Caztor will handle it. The same isn't true for XML: Caztor can handle
+Atom feeds in XML format, but it can't do much with other XML documents.
+
+Since Caztor doesn't know whether an XML file is one it can handle or not, it
+has to download it to find out.  If it's not a feed, Caztor writes the XML to
+a temporary file and hands it off to the desktop. 
+
+This specific handling subverts Caztor's usual method of dealing with
+documents it can't handle, which is to prompt the user what to do with them.
+The difference arises from the fact that, other than for XML documents, Caztor
+knows whether it can handle the document as soon as the server responds with a
+content type.  For XML, though, Caztor has to read the response.
+
+
+[Documentation index](index.md)
+
+

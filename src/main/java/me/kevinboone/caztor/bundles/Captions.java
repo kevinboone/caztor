@@ -1,0 +1,37 @@
+/*=========================================================================
+  
+  Caztor
+
+  Captions bundle 
+
+  Copyright (c)2021 Kevin Boone, GPLv3.0 
+
+=========================================================================*/
+package me.kevinboone.caztor.bundles;
+import java.util.*;
+
+public class Captions extends ListResourceBundle 
+  {
+  private Object[][] contents = 
+    {
+    {"attach_identity", "Attach identity to keystore"},
+    {"bookmarks", "Bookmarks"},
+    {"documentation", "Caztor documentation"},
+    {"downloads", "Caztor downloads"},
+    {"edit_config_file", "Edit settings"},
+    {"feeds", "Subscriptions"},
+    {"feed_manager", "Feed aggregator"},
+    {"new_identity", "New identity"},
+    {"select_action", "Select action"},
+    {"set_identity", "Set identity"},
+    {"settings", "Settings"},
+    {"release_notes", "Release notes"},
+    };
+
+  @Override
+  public Object[][] getContents() 
+     {
+     return contents;
+     }
+  }
+

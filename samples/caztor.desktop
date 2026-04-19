@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=JGemini
+GenericName=JGemini
+Comment=Browse Gemini capsules
+Keywords=internet
+Icon=caztor
+Type=Application
+Categories=Internet
+Exec=caztor %F
+StartupNotify=false
+Terminal=false
+MimeType=text/gemini
+

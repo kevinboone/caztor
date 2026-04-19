@@ -1,0 +1,159 @@
+/*=========================================================================
+  
+  Caztor
+
+  DefaultBookmarkHandler 
+
+  Copyright (c)2026 Kevin Boone, GPLv3.0 
+
+=========================================================================*/
+package me.kevinboone.caztor.swing;
+
+import java.net.*;
+import java.io.*;
+import java.util.*;
+import me.kevinboone.caztor.Constants;
+import me.kevinboone.caztor.base.*;
+
+/** The main bookmark handler. This class is responsible for adding
+    bookmarks, checking whether a URL is already bookmarked, and
+    raising the bookmark editor, which is just a file editor. */
+public class DefaultBookmarkHandler implements BookmarkHandler 
+  {
+  private Config config;
+  private MainWindow mainWindow;
+  /** fileWasUpdated is set whenever a new line is written to the
+     bookmark file, and at start-up. When set, it causes calls like
+     getBookmarkCount to reload from file. */
+  private boolean fileWasUpdated = true;
+  private Vector<GemLink> bookmarks = new Vector<GemLink>();
+
+  private final static ResourceBundle captionsBundle = 
+    ResourceBundle.getBundle ("me.kevinboone.caztor.bundles.Captions");
+
+  DefaultBookmarkHandler (MainWindow mainWindow)
+    {
+    config = Config.getConfig();
+    this.mainWindow = mainWindow;
+    }
+
+  /** isBookmark() returns true if the URI is definitely bookmarked, and
+      false if not, or uncertain. This method throws no exceptions, so
+      file-handling errors are quietly ignored. */
+  @Override
+  public boolean isBookmarked (URL uri)
+    {
+    String sUri = uri.toString();
+    readFromFile();
+    int l = bookmarks.size();
+    for (int i = 0; i < l; i++)
+      {
+      GemLink link = bookmarks.elementAt(i);
+      if (link.getUri().equals (sUri)) return true;
+      }
+    return false;
+    }
+
+  /** addBookmark() returns true if a new bookmark is added. The only
+      reason not to add the bookmark -- other than an exception --
+      is that the URI is already bookmarked. */
+  @Override
+  public boolean addBookmark (String displayName, URL uri) throws IOException
+    {
+    if (Logger.isDebug())
+      Logger.log (getClass().getName(), Logger.DEBUG, "addBookmark(): " + displayName + " " + uri);
+
+    if (isBookmarked(uri)) return false;
+
+    String bookmarksFile = config.getBookmarksFile();
+    String newBookmark = "=> " + uri + " " + displayName + "\n";
+    FileUtil.appendStringToFile (bookmarksFile, newBookmark);
+    fileWasUpdated = true;
+    return true;
+    }
+
+  /** Raise a file editor that targets the bookmarks file. 
+  */
+  @Override
+  public void editBookmarks() throws IOException
+    {
+    config.ensureBookmarksFileExists();
+    String bookmarksFile = config.getBookmarksFile();
+    EditFileDialog d = new EditFileDialog (mainWindow, 
+        captionsBundle.getString ("bookmarks"),
+          bookmarksFile, Constants.DOC_EDIT_BOOKMARKS);
+    d.setVisible (true);
+    if (d.didSave())
+      {
+      fileWasUpdated = true;
+      }
+    }
+
+  public int getBookmarkCount()
+    {
+    Logger.log (getClass().getName(), Logger.DEBUG, "getBookmarkCount()");
+    readFromFile();
+    return bookmarks.size();
+    }
+
+  /** Get a specific bookmark by its index. This method will throw an exception 
+      if index &lt; 0 or &gt; the size of the bookmark list. It should only 
+      called after a call to getBookmarkCount(), which will also reload 
+      from file if necessary. 
+  */
+  @Override
+  public GemLink getBookmarkLink (int index)
+    {
+    readFromFile();
+    return bookmarks.elementAt (index);
+    }
+
+  /** Read all the bookmarks from file, if the "fileWasUpdated" attribute
+      is true, that is, if there is reason to think that we need to
+      reload. 
+  */
+  public void readFromFile() 
+    {
+    // Just creating a new Vector and leaving the old one for GC is
+    //   probably quicker than clearing the existing one
+    if (fileWasUpdated)
+      {
+      Logger.log (getClass().getName(), Logger.DEBUG, "readFromFile()");
+      bookmarks = new Vector<GemLink>();
+      Logger.log (getClass().getName(), Logger.DEBUG, "Bookmark data stale -- need to read");
+      String bookmarksFile = config.getBookmarksFile();
+      try
+	{
+	BufferedReader br = new BufferedReader (new InputStreamReader 
+	  (new FileInputStream (bookmarksFile)));
+	String line = br.readLine();
+	while (line != null)
+	  {
+	  if (line.indexOf ("=>") == 0)
+	    {
+	    GemLink link = GemLink.parse (line.substring(2).trim());
+	    bookmarks.add (link); 
+	    }
+	  line = br.readLine();
+	  }
+	br.close();
+	}
+      catch (IOException e)
+	{
+	}
+      }
+    fileWasUpdated = false;
+    }
+
+  /** Show all the bookmarks by opening the bookmarks file -- which is
+      just Gemtext -- in a new viewer window. */
+  @Override
+  public void showBookmarks() throws IOException
+    {
+    config.ensureBookmarksFileExists();
+    String bookmarksFile = config.getBookmarksFile();
+    URL u = new File (bookmarksFile).toURL();
+    mainWindow.loadURI (u);
+    }
+  }
+
