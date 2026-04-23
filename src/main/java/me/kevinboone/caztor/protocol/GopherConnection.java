@@ -26,6 +26,7 @@ public class GopherConnection extends URLConnection
   private char gopherType = '0';
   private final static ResourceBundle messagesBundle = 
     ResourceBundle.getBundle ("me.kevinboone.caztor.bundles.Messages");
+  private static final Config config = Config.getConfig();
 
   public GopherConnection (URL url) 
     {
@@ -43,7 +44,10 @@ public class GopherConnection extends URLConnection
     int port = getURL().getPort();
     if (port == -1) port = 70;
 
-    s = new Socket (host, port);
+    int timeoutMs = config.getConnectTimeout() * 1000;
+
+    s = new Socket ();
+    s.connect (new InetSocketAddress (host, port), timeoutMs);
     is = s.getInputStream();
     OutputStream os = s.getOutputStream();
     PrintStream pos = new PrintStream (os);

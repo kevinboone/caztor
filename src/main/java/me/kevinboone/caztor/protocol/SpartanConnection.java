@@ -22,8 +22,9 @@ public class SpartanConnection extends URLConnection
   private InputStream is = null;
   private String meta = null;
   private static StatusHandler statusHandler = StatusHandler.getInstance();
-  private final static ResourceBundle messagesBundle = 
+  private static final ResourceBundle messagesBundle = 
     ResourceBundle.getBundle ("me.kevinboone.caztor.bundles.Messages");
+  private static final Config config = Config.getConfig();
 
   public SpartanConnection (URL url) 
     {
@@ -58,12 +59,16 @@ public class SpartanConnection extends URLConnection
       throws IOException 
     {
     if (s != null && s.isConnected()) return;
+
+    int timeoutMs = config.getConnectTimeout() * 1000;
+
     String host = getURL().getHost();
     String path = getURL().getPath();
     int port = getURL().getPort();
     if (port == -1) port = 300;
 
-    s = new Socket (host, port);
+    s = new Socket ();
+    s.connect (new InetSocketAddress (host, port), timeoutMs);
     is = s.getInputStream();
     OutputStream os = s.getOutputStream();
     PrintStream pos = new PrintStream (os);

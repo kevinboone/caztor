@@ -1,9 +1,9 @@
 # Things to watch out for
 
-## TLS and certificate issues with Gemini
+## TLS and certificate issues with Gemini and Demarkus
 
 There is _no_ TLS certificate check, not even trust-on-first-use.  Caztor uses
-encrypted TLS communication because Gemini demands it. However, most Gemini
+TLS 1.3 with Gemini and Demarkus, because it is mandatory. However, most Gemini
 servers do not issue certificates that are validated by external authorities.
 So, rather than prompting the user to confirm every site, Caztor simply
 assumes every server certificate is fine. Is this a security problem?  Sure. If

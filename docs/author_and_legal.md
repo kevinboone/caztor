@@ -27,6 +27,10 @@ Dominic Fellbaum and others ([licence](about:/LICENCE_jemoji.txt)).
 * [Tango desktop icons](https://tango.freedesktop.org/), distributed
   under the terms of the Create Commons Attribution-ShareAlike licence.
 
+* [Kwik: A QUIC implementation for Java](https://github.com/ptrd/kwik), 
+  mainained by Peter Doornbosch and distributed under the terms of the 
+  GNU Public Licence, version 3.0.
+
 [Documentation index](index.md)
 
 

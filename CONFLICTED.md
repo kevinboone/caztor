@@ -17,8 +17,22 @@ Currently there is none, and I'm not sure how much value there is in
 implementing in. I'm not sure if there even is a robust way to implement it, as
 gophermaps don't (so far as I know) provide any protocol information.
 
-## finger, demarkus, scorpion, etc.
+## finger, scorpion, etc.
 
 All these things would be quite easy to support, but I'm not sure there are
 enough users to make it worthwhile.
+
+## Using cached pages for navigation
+
+It would be possible to store page contents along with the link stack, so 
+Caztor could implement 'back' and 'forward' operations from the cache. 
+This would speed things up a load when servers are slow.
+
+The problem, of course, is that none of the protocols Gemini supports
+allow for robust caching -- they have no time-stamping of requests or
+responses. So there would need to be a way for the user to indicate
+whether to use the cached page or redo the request -- there's simply 
+no way to know, otherwise, which is appropriate. I'm not sure
+whether user would understand the implication of making the choice,
+and multiple buttons or menus would clutter the user interface.
 

@@ -480,6 +480,34 @@ public class FileUtil
     return new DecimalFormat ("#,##0.#").format(result) + " " + unit;
     }
 
+/*=========================================================================
+  
+   getRootUri 
+
+=========================================================================*/
+  /**
+   Get the site root. What that means depends on the URI. In particular,
+   URIs containing a username (host:port/~fred) have their root at the
+   user's top-level directory, not the server's top-level directory. 
+  */
+  public static URL getRootUri (URL baseUri) throws MalformedURLException
+    {
+    String path = baseUri.getPath();
+    if (path.startsWith ("/~"))
+      {
+      String temp = path.substring (2);
+      int i = temp.indexOf ("/"); 
+      temp = temp.substring (0, i >= 0 ? i : 0);
+      java.net.URL newUrl = new URL (baseUri, "/~" + temp + "/");
+      return newUrl;
+      }
+    else
+      {
+      java.net.URL newUrl = new URL (baseUri, "/"); 
+      return newUrl;
+      }
+    }
+
 /*============================================================================
 
   guessMimeTypeFromFilename

@@ -20,7 +20,7 @@ import me.kevinboone.caztor.Constants;
 /**
 The top bar contains the navigation buttons and URL combo box. 
 */
-public class TopBar extends JPanel
+public class TopBar extends JPanel implements PageLoadListener
   {
   private FilteredComboBox urlBox;
   private MainWindow mainWindow;
@@ -28,6 +28,10 @@ public class TopBar extends JPanel
   private final static ResourceBundle tooltipsBundle = 
     ResourceBundle.getBundle ("me.kevinboone.caztor.bundles.Tooltips");
   private Config config = Config.getConfig();
+  private JButton backButton;
+  private JButton fwdButton;
+  private JButton identButton;
+  private JButton stopButton;
 
 /*=========================================================================
   
@@ -39,13 +43,14 @@ public class TopBar extends JPanel
     super();
     Logger.in();
     this.mainWindow = mainWindow;
+    mainWindow.addPageLoadListener (this);
+
     setLayout (new GridBagLayout());
 
     int iconSize = config.getIconSize();
 
     urlBox = new FilteredComboBox();
     urlBox.setEditable (true);
-    //urlBox.setMargin (new Insets (5, 5, 5, 5));
     urlBox.addActionListener(new ActionListener() 
       {
       @Override
@@ -73,9 +78,19 @@ public class TopBar extends JPanel
     ImageIcon backIcon = new ImageIcon (backImgURL);
     backIcon = new ImageIcon (backIcon.getImage().getScaledInstance 
       (iconSize, iconSize, Image.SCALE_DEFAULT));
-    JButton backButton = new JButton (backIcon);
+    backButton = new JButton (backIcon);
     backButton.addActionListener((event) -> mainWindow.back());
     backButton.setToolTipText (tooltipsBundle.getString("back"));
+
+    java.net.URL fwdImgURL = getClass().getResource
+      (mono ? "/images/fwd_mono.png" : "/images/fwd.png");
+    ImageIcon fwdIcon = new ImageIcon (fwdImgURL);
+    fwdIcon = new ImageIcon (fwdIcon.getImage().getScaledInstance 
+      (iconSize, iconSize, Image.SCALE_DEFAULT));
+    fwdButton = new JButton (fwdIcon);
+    fwdButton.addActionListener((event) -> mainWindow.fwd());
+    fwdButton.setToolTipText (tooltipsBundle.getString("fwd"));
+
     java.net.URL homeImgURL = getClass().getResource
       (mono ? "/images/home_mono.png" : "/images/home.png");
     ImageIcon homeIcon = new ImageIcon (homeImgURL);
@@ -84,28 +99,31 @@ public class TopBar extends JPanel
     JButton homeButton = new JButton (homeIcon);
     homeButton.addActionListener((event) -> mainWindow.home());
     homeButton.setToolTipText (tooltipsBundle.getString("home"));
+
     java.net.URL refreshImgURL = getClass().getResource
       (mono ? "/images/refresh_mono.png" : "/images/refresh.png");
     ImageIcon refreshIcon = new ImageIcon (refreshImgURL);
     refreshIcon = new ImageIcon (refreshIcon.getImage().getScaledInstance 
       (iconSize, iconSize, Image.SCALE_DEFAULT));
     JButton refreshButton = new JButton (refreshIcon);
-    refreshButton.addActionListener((event) -> mainWindow.refresh());
+    refreshButton.addActionListener((event) -> mainWindow.reload());
     refreshButton.setToolTipText (tooltipsBundle.getString("refresh"));
+
     java.net.URL identImgURL = getClass().getResource
       (mono ? "/images/person_mono.png" : "/images/person.png");
     ImageIcon identIcon = new ImageIcon (identImgURL);
     identIcon = new ImageIcon (identIcon.getImage().getScaledInstance 
       (iconSize, iconSize, Image.SCALE_DEFAULT));
-    JButton identButton = new JButton (identIcon);
+    identButton = new JButton (identIcon);
     identButton.addActionListener((event) -> mainWindow.manageIdentity());
     identButton.setToolTipText (tooltipsBundle.getString("identity"));
+
     java.net.URL stopImgURL = getClass().getResource
       (mono ? "/images/stop_mono.png" : "/images/stop.png");
     ImageIcon stopIcon = new ImageIcon (stopImgURL);
     stopIcon = new ImageIcon (stopIcon.getImage().getScaledInstance 
       (iconSize, iconSize, Image.SCALE_DEFAULT));
-    JButton stopButton = new JButton (stopIcon);
+    stopButton = new JButton (stopIcon);
     stopButton.addActionListener((event) -> mainWindow.stop());
     stopButton.setToolTipText (tooltipsBundle.getString("stop"));
 
@@ -115,6 +133,7 @@ public class TopBar extends JPanel
     c.insets = new Insets (0, 15, 0, 15);
 
     add (backButton);
+    add (fwdButton);
     add (identButton);
     add (homeButton);
     add (refreshButton);
@@ -233,6 +252,31 @@ public class TopBar extends JPanel
     urlBox.setSelectedIndex (-1);
     urlbarEnabled = true; 
     Logger.out();
+    }
+
+/*=========================================================================
+  
+  pageLoaded
+
+=========================================================================*/
+  @Override
+  public void pageLoaded()
+    {
+    backButton.setEnabled (mainWindow.canGoBack());
+    fwdButton.setEnabled (mainWindow.canGoFwd());
+    identButton.setEnabled (mainWindow.canIdentity());
+    stopButton.setEnabled (false);
+    }
+
+/*=========================================================================
+  
+  pageLoading
+
+=========================================================================*/
+  @Override
+  public void pageLoading()
+    {
+    stopButton.setEnabled (true);
     }
 
 /*=========================================================================

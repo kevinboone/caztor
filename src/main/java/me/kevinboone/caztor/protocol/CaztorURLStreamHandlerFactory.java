@@ -44,6 +44,10 @@ public class CaztorURLStreamHandlerFactory implements URLStreamHandlerFactory
       {
       return new AboutURLStreamHandler();
       }
+    else if ("mark".equals(protocol)) 
+      {
+      return new DemarkusURLStreamHandler();
+      }
     return null;
     }
   }

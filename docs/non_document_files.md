@@ -27,7 +27,8 @@ If you change your mind, you can use the [Settings dialog](settings_dialog.md)
 to reset the file handling choices.
 
 Rather than left-clicking a link and then making a choice how to handle the
-file, you can right-click, and see other choices. These choices will depend on
+file, you can right-click, and see other choices. This works on in-line
+images, too. These choices will depend on
 the type of the document, as best Caztor can determine it. Since there's no
 way for Caztor to know what a link provides except by fetching it, it will use
 the link filename as a guide to what choices to offer. For example, only common

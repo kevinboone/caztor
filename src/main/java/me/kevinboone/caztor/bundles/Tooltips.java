@@ -17,9 +17,10 @@ public class Tooltips extends ListResourceBundle
     {"back", "Go back"},
     {"download_cancel", "Cancel download"},
     {"download_folder", "Open download folder"},
+    {"fwd", "Go forward"},
     {"home", "Go home"},
     {"identity", "Manage identity"},
-    {"refresh", "Refresh page"},
+    {"refresh", "Reload page"},
     {"stop", "Stop loading page"},
     };
 

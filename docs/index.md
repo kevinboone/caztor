@@ -20,6 +20,8 @@ This is the built-in documentation for Caztor version 1.0.
 
 [Bookmark support](bookmarks.md)
 
+[Text prompts](text_prompts.md)
+
 [Identity](identity.md)
 
 [Media and streaming support](media_and_streaming.md)

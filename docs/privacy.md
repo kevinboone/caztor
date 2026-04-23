@@ -2,9 +2,9 @@
 
 ## Network privacy issues
 
-All the "small net" protocols that Caztor supports, apart from Gemini,
-are unencrypted. Your requests and responses are visible to anybody
-who can see your network traffic. 
+Of the "small net" protocols that Caztor supports, only Gemini and Demarkus,
+are encrypted. With the other protocols, your requests and responses are
+visible to anybody who can see your network traffic. 
 
 On the positive side, however, none of these protocols is very traceable,
 because they don't carry much information from the client. There's no realistic

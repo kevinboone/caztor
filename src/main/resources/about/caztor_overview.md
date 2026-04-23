@@ -1,7 +1,7 @@
 # Caztor overview
 
 Caztor is a browser for various [small net protocols](smallnet.md).
-At present it supports Gemini, Gopher, Spartan, and Nightfall Express, but
+At present it supports Gemini, Gopher, Spartan, Demarkus, and Nightfall Express, but
 others should be easy to add. It can display plain text, Gemtext, 
 Markdown, and images; documents with other formats are handed off to
 the desktop to handle.
@@ -15,7 +15,8 @@ Caztor is distributed as a single Java JAR file, and requires
 ## Features
 
 - Supplied as a single Java JAR file
-- Supports Gemini, Spartan, Gopher, and `nex` protocols
+- Supports Gemini, Spartan, Gopher, Demarkus (`mark:`) and 
+  Nightfall Express (`nex:`) protocols
 - Displays Gemtext, CommonMark Markdown, and plain text
 - Authenticates using per-server client certificates
 - Built-in client certificate manager, which can create new certificates and

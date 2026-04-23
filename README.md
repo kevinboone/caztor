@@ -402,10 +402,24 @@ JGemini version 3.0.0 -- April 2026
   dangling threads that can't easily be closed. When exiting, Caztor cleans up
   incomplete file transfers
 
-Caztor version 1.0 -- April 2026
+Caztor version 1.0.0 -- April 2026
 
 - Feed aggregation support
 - Complete renaming to suit the new "Caztor" name
 - New logo and artwork
 
+Caztor version 1.0.1 -- April 2026
+
+- URL bar filtering now sorts matches in alpha order, which tends to put
+  shorter URLs at the top. This needs careful monitoring, because 
+  the sorting operation is performed very frequently, and is 
+  computationally expensive
+- You can now right-click an image to get the context menu, as well
+  as the image's link text. This is important in Markdown documents, as
+  there generally isn't any link text
+- Added forward as well as back navigation
+- Toolbar buttons and menus now enable/disable according to page contents
+- Added a connection timeout that defaults to ten seconds
+- Preliminary Demarkus browsing support
+- Updated documentation
 

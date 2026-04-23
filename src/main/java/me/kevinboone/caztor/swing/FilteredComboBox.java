@@ -399,7 +399,10 @@ public class FilteredComboBox extends JPanel
   Derive from the main `items` Vector the contents of the DefaultListModel
   that we'll show to the user. This method will be called for each
   user keystroke, so it ought not to be too sluggish. I guess it will be,
-  though, when there are many items in the list.
+  though, when there are many items in the list. It will be particularly
+  sluggish when the list has to be sorted, as we'll have to filter
+  the model into a temporary list, sort it, and then write the results
+  back.
 
 =========================================================================*/
   private void populateModel (String filter)
@@ -409,6 +412,9 @@ public class FilteredComboBox extends JPanel
     boolean focus = input.hasFocus();
     model.removeAllElements(); 
     int n = items.size();
+   
+/*
+    // Unsorted implementation
     for (int i = 0; i < n; i++)
       {
       String s = items.elementAt (i);
@@ -418,6 +424,25 @@ public class FilteredComboBox extends JPanel
       //if (s.toLowerCase().contains (filter.toLowerCase()) || !focus)
       //  model.addElement (s);
       }
+*/
+    // Sorted implementation
+    ArrayList<String> t = new ArrayList <String>();   
+    for (int i = 0; i < n; i++)
+      {
+      String s = items.elementAt (i);
+      if (s.contains (filter) || !focus) 
+        t.add (s);
+      }
+   
+    Collections.sort(t);
+
+    int l = t.size();
+    for (int i = 0; i < l; i++)
+      {
+      String s = t.get (i);
+      model.addElement (s);
+      }
+
     suppressListeners = oldSuppressListeners;
     }
 
@@ -507,6 +532,5 @@ public class FilteredComboBox extends JPanel
       actionListener.actionPerformed 
         (new ActionEvent (this, 0, "comboBoxChanged"));
     }
-
   }
 

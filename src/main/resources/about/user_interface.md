@@ -6,7 +6,7 @@ from the mid-90s. Caztor is deliberately, and unashamedly, old-fashioned.
 To navigate to a site (capsule, gopherhole, etc), just enter (or copy/paste)
 its URL into the URL bar at the top of the window. If you don't enter
 a full URL, but you do enter a hostname, Caztor will put `gemini://` on
-the front. The "Home", "Back", and
+the front. The "Home", "Back", "Forward", and
 "Reload" buttons on the toolbar do what you'd expect. 
 
 If direct searching from the URL bar is enabled (by default it is), you can enter

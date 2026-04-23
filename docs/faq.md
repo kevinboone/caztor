@@ -76,6 +76,16 @@ the [Settings dialog](settings_dialog), and click "Clear history".
 Unless you disable the saving of URL history, Caztor will continue
 to add new URLs to the history after clearing existing ones. 
 
+_How do I stop slow connections timing out?_
+
+The default connection timeout, for all protocols, is ten seconds.
+You can change this in the [configuration file](config_file.md),
+by adding a setting:
+
+    connect.timeout=20
+
+or whatever time in seconds you prefer.
+
 _How do I open a local .gmi file?_
 
 From the command line, just run

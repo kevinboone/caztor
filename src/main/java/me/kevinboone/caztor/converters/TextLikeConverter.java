@@ -111,7 +111,7 @@ public class TextLikeConverter
     catch (Exception e)
       {
       Logger.out();
-      e.printStackTrace();
+      Logger.log (getClass().getName(), Logger.WARNING, e.toString());
       return link;
       }
     }

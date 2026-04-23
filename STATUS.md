@@ -1,6 +1,6 @@
 # JGemini project status
 
-April 2026, version 1.0.0 
+April 2026, version 1.0.1 
 
 Caztor (formerly JGemini) is basically functional, and it's my main interface
 to the Gemini/Gopher world these days. I use it all the time. 

@@ -31,6 +31,22 @@ After all, pretty much anything that can be viewed can be converted to HTML.
 Unfortunately, the built-in document viewer won't use anything except platform
 fonts, so bundling emoji fonts wouldn't be helpful. 
 
+_Why "Caztor"?_
+
+"Castor" is one of the stars in the Gemini constellation.  Changing the "s" to
+a "z" gives a name that isn't widely used. All the other names associated with
+the Gemini protocol are so widely used, that its difficult to find anything with
+a web search.
+
+_Why won't Caztor import settings from JGemini?_
+
+Because too many names have changed, and I'm not sure it's worth the
+effort of adding code to convert everything. For Linux users, there's
+a script in the `samples/` directory of the source code bundle that
+will create a new Caztor configuration from an existing JGemini
+configuration -- provided you haven't changed too many of the stock
+file locations. 
+
 ## Basic features
 
 _How do I set the home page?_
@@ -59,6 +75,16 @@ Go to the _History_ tab in
 the [Settings dialog](settings_dialog), and click "Clear history".
 Unless you disable the saving of URL history, Caztor will continue
 to add new URLs to the history after clearing existing ones. 
+
+_How do I stop slow connections timing out?_
+
+The default connection timeout, for all protocols, is ten seconds.
+You can change this in the [configuration file](config_file.md),
+by adding a setting:
+
+    connect.timeout=20
+
+or whatever time in seconds you prefer.
 
 _How do I open a local .gmi file?_
 

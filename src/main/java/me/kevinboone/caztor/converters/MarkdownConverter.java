@@ -10,16 +10,13 @@
 package me.kevinboone.caztor.converters;
 import java.net.*;
 import java.io.*;
-import java.util.Map;
-import java.util.List;
+import java.util.*;
 import me.kevinboone.caztor.base.*;
 import org.commonmark.Extension;
 import org.commonmark.node.*;
 import org.commonmark.parser.Parser;
-import org.commonmark.renderer.html.HtmlRenderer;
-import org.commonmark.renderer.html.AttributeProviderFactory;
-import org.commonmark.renderer.html.AttributeProvider;
-import org.commonmark.renderer.html.AttributeProviderContext;
+import org.commonmark.renderer.*;
+import org.commonmark.renderer.html.*;
 import org.commonmark.ext.gfm.tables.TablesExtension;
 
 
@@ -52,6 +49,7 @@ class LinkAttributeProvider implements AttributeProvider
         {
         attributes.put("src", oldSrc);
         }
+      attributes.put("alt", "foo");
       }
     else if (node instanceof Link) 
       {
@@ -88,11 +86,15 @@ public class MarkdownConverter implements Converter
     this.baseUrl = baseUrl;
     // Create the renderer with our AttributeProvider in place.
     renderer = HtmlRenderer.builder()
-        .attributeProviderFactory(new AttributeProviderFactory() {
-            public AttributeProvider create (AttributeProviderContext context) {
-                return new LinkAttributeProvider (baseUrl);
-            }
-        }) .extensions(extensions).build();
+        .attributeProviderFactory(new AttributeProviderFactory() 
+           {
+           public AttributeProvider create (AttributeProviderContext context) 
+             {
+             return new LinkAttributeProvider (baseUrl);
+             }
+           })
+        .extensions (extensions)
+        .build();
     }
 
   /** Convert the Markdown file to HTML. */ 

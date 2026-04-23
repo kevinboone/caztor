@@ -12,12 +12,14 @@ displayed in a fixed-pitch font. To use Gopher is to step back in time, to the
 days where all computer interaction took place through a terminal with an
 eighty-column display.
 
-Gopher supports a simple method of text upload from the client to the server,
-which makes it possible to implement a search engine.
-
 Gopher lacks the flexible hyper-linking we associate with the web and HTML.
 Links from one site to another are defined in 'gophermaps', which have an
 awkward, arcane format. 
+
+Gopher supports a simple method of text upload from the client to the server,
+which makes it possible to implement a search engine. Caztor supports this
+part of the protocol, but you should be careful about sending data other
+than plain ASCII text to a Gopher server.
 
 The Gopher protocol does not usually support encryption, and provides no secure
 method of authentication. 
@@ -64,6 +66,15 @@ upload of data from the browser to the server but, because there's no
 encryption, this has to be done with care. Because there's no well-documented
 standard for data upload, browsers like Caztor can't easily implement such
 features.
+
+## Demarkus
+
+Demarkus is a simple, encrypted protocol for viewing and managing textual data
+in Markdown format. The protocol defines operations for publishing, directory
+listing, and version control, but Caztor only supports viewing documents, and
+only the most recent version. Demarkus URLs begin with the `mark:` protocol.
+For more information, please see the 
+[Demarkus project home page](https://www.demarkus.io/).
 
 
 [Documentation index](about:/index.md)

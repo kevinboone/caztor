@@ -107,6 +107,8 @@ public class Menus extends ListResourceBundle
     {"go_back_mnemonic", KeyEvent.VK_B},
     {"go_back_accel", (KeyStroke.getKeyStroke
       (KeyEvent.VK_BACK_SPACE, 0))},
+    {"go_forward", "Forward"},
+    {"go_forward_mnemonic", KeyEvent.VK_F},
 
     {"go_home", "Home"},
     {"go_home_mnemonic", KeyEvent.VK_H},
@@ -157,9 +159,9 @@ public class Menus extends ListResourceBundle
     {"view", "View"},
     {"view_mnemonic", KeyEvent.VK_V},
 
-    {"view_refresh", "Refresh"},
-    {"view_refresh_mnemonic", KeyEvent.VK_R},
-    {"view_refresh_accel", (KeyStroke.getKeyStroke
+    {"view_reload", "Reload"},
+    {"view_reload_mnemonic", KeyEvent.VK_R},
+    {"view_reload_accel", (KeyStroke.getKeyStroke
       (KeyEvent.VK_R, ActionEvent.CTRL_MASK))},
     {"view_theme", "Theme..."},
     {"view_theme_mnemonic", KeyEvent.VK_T},

@@ -402,6 +402,17 @@ public class Config extends Properties
 
 /*=========================================================================
   
+  getTimeoutSec
+
+=========================================================================*/
+  public int getConnectTimeout()
+    {
+    return Integer.parseInt (getProperty (Constants.CONNECT_TIMEOUT, 
+      Constants.DEFLT_CONNECT_TIMEOUT));
+    }
+
+/*=========================================================================
+  
   getWindowWidth
 
 =========================================================================*/
@@ -789,6 +800,16 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
       }
     deriveProperties();
     Logger.out();
+    }
+
+/*=========================================================================
+  
+  setConnectTimeout
+
+=========================================================================*/
+  public void setConnectTimeout (int n)
+    {
+    setProperty (Constants.CONNECT_TIMEOUT, "" + n);
     }
 
 /*=========================================================================

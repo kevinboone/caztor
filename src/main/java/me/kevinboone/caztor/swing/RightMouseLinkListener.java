@@ -17,7 +17,8 @@ import java.util.*;
     */
 abstract class RightMouseLinkListener extends MouseAdapter 
   {
-  public abstract void clicked (String href, int x, int y);
+  public abstract void clickedLink (String href, int x, int y);
+  public abstract void clickedImage (String href, int x, int y);
 
   @Override
   public void mouseClicked (MouseEvent e) 
@@ -27,15 +28,28 @@ abstract class RightMouseLinkListener extends MouseAdapter
       Element h = getHyperlinkElement (e);
       if (h != null) 
         {
-        Object attribute = h.getAttributes().getAttribute (HTML.Tag.A);
-        if (attribute instanceof AttributeSet) 
+        String elementName = h.getName();
+        if ("content".equals (elementName))
           {
-          AttributeSet set = (AttributeSet) attribute;
-          String href = (String) set.getAttribute (HTML.Attribute.HREF);
-          if (href != null) 
-            {
-            clicked (href, e.getX(), e.getY());
-            }
+          // The HTML viewer doesn't distinguish links from general
+          //   content. But only links will have an "A" attribute
+	  Object attribute = h.getAttributes().getAttribute (HTML.Tag.A);
+	  if (attribute instanceof AttributeSet) 
+	    {
+	    AttributeSet set = (AttributeSet) attribute;
+	    String href = (String) set.getAttribute (HTML.Attribute.HREF);
+	    if (href != null) 
+	      {
+	      clickedLink (href, e.getX(), e.getY());
+	      }
+	    }
+          }
+        else if ("img".equals (elementName))
+          {
+	  AttributeSet as = h.getAttributes(); 
+          Object o = as.getAttribute (HTML.Attribute.SRC);
+          String src = o.toString(); 
+	  clickedImage (src, e.getX(), e.getY());
           }
         }
       }
@@ -49,7 +63,7 @@ abstract class RightMouseLinkListener extends MouseAdapter
       {
       HTMLDocument hdoc = (HTMLDocument) editor.getDocument();
       Element elem = hdoc.getCharacterElement (pos);
-      if (elem.getAttributes().getAttribute (HTML.Tag.A) != null) 
+      //if (elem.getAttributes().getAttribute (HTML.Tag.A) != null)
         {
         return elem;
         }

@@ -34,6 +34,7 @@ public class GeminiConnection extends URLConnection
   private final static ResourceBundle messagesBundle = 
     ResourceBundle.getBundle ("me.kevinboone.caztor.bundles.Messages");
   private String certinfo = null;
+  private static Config config = Config.getConfig();
 
 /*============================================================================
 
@@ -133,12 +134,18 @@ public class GeminiConnection extends URLConnection
       KeyManagerFactory kmf = 
         clientCertManager.getKMFForURL (url); 
 
+      int timeoutMs = config.getConnectTimeout() * 1000;
+
       SSLContext sc = SSLContext.getInstance("SSL");
       if (kmf != null)
         sc.init (kmf.getKeyManagers(), trustAllCerts, new java.security.SecureRandom());
       else
         sc.init (null, trustAllCerts, new java.security.SecureRandom());
-      s = (SSLSocket)sc.getSocketFactory().createSocket (host, port); 
+      //s = (SSLSocket)sc.getSocketFactory().createSocket (host, port); 
+      s = (SSLSocket)sc.getSocketFactory().createSocket (); 
+      s.setSoTimeout (timeoutMs);
+      s.connect(new InetSocketAddress(host, port), timeoutMs);
+      s.startHandshake();
       SSLParameters params = new SSLParameters();
       params.setServerNames (Collections.singletonList(new SNIHostName(host)));
       s.setSSLParameters(params);

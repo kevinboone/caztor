@@ -23,7 +23,7 @@ public interface Constants
   // General
 
   public final static String APP_NAME = "Caztor";
-  public final static String VERSION = "1.0.0";
+  public final static String VERSION = "1.0.1";
   // Header of user properties file
   public final static String PROPS_COMMENTS = "Caztor user configuration"; 
   // Header of bookmarks file
@@ -42,6 +42,7 @@ public interface Constants
 
   public final static String BOOKMARK_FILE = "bookmark.file";
   public final static String BOOKMARK_MAX_MENU = "bookmark.max.menu";
+  public final static String CONNECT_TIMEOUT = "connect.timeout";
   public final static String EMOJI_STRIP_BOOKMARKS = "emoji.strip.bookmarks";
   public final static String FEEDS_FILE = "feeds.file";
   public final static String FEEDS_MAX_AGE = "feeds.max_age";
@@ -70,6 +71,7 @@ public interface Constants
 
   // Settings file default values
 
+  public final static String DEFLT_CONNECT_TIMEOUT = "10"; // Sec
   public final static String DEFLT_FEEDS_MAX_AGE = "14"; // Days
   public final static String DEFLT_HISTORY_SIZE = "30";
   public final static String DEFLT_INLINE_IMAGE_WIDTH = "600";

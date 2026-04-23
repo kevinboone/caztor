@@ -73,6 +73,10 @@ See also the entry for `ident`.
 
 For more information, see the page on [client certificates](client_certs.md).
 
+`connect.timeout`  
+The longest time in seconds that Caztor will wait to establish a
+connection to a server. Default is 10 seconds.
+
 `emoji.strip.bookmarks`  
 If set to 'yes', Caztor strips Unicode emojis from new bookmarks before
 storing them. It also prevents emojis being displayed in the main user

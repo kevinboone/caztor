@@ -13,10 +13,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.text.*;
-import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.text.html.StyleSheet;
-import javax.swing.event.HyperlinkListener;
-import javax.swing.event.HyperlinkEvent;
+import javax.swing.text.html.*;
+import javax.swing.event.*;
 import javax.swing.filechooser.*;
 import javax.swing.border.EmptyBorder;
 import java.net.*;
@@ -54,7 +52,7 @@ public class MainWindow extends JFrame implements ConfigChangeListener
   private TopBar topBar;
   private StatusBar statusBar;
   private JMenuBar menuBar;
-  private Stack<URL> backlinks = new Stack<URL>();
+  private LinkStack linkStack = new LinkStack();
   private SwingWorker loadWorker = null;
   private String searchText = "java"; // TODO
   private int searchPos = 0;
@@ -70,6 +68,8 @@ public class MainWindow extends JFrame implements ConfigChangeListener
     = new DefaultClientCertHandler (this);
   private DownloadMonitor downloadMonitor
     = DefaultDownloadMonitor.getInstance(); // Application-wide reference
+  private Vector<PageLoadListener> pageLoadListeners 
+    = new Vector<PageLoadListener>();
 
 
 /*=========================================================================
@@ -121,9 +121,15 @@ public class MainWindow extends JFrame implements ConfigChangeListener
     // Add a custom listener for right-click events on links
     jEditorPane.addMouseListener (new RightMouseLinkListener()
       {
-      public void clicked (String href, int x, int y)
+      @Override
+      public void clickedLink (String href, int x, int y)
         {
-        Logger.log (getClass().getName(), Logger.DEBUG, "Right click");
+        Logger.log (getClass().getName(), Logger.DEBUG, "Right click link");
+        handleRightClick (href, x, y);
+        }
+      public void clickedImage (String href, int x, int y)
+        {
+        Logger.log (getClass().getName(), Logger.DEBUG, "Right click image");
         handleRightClick (href, x, y);
         }
       });
@@ -219,6 +225,16 @@ public class MainWindow extends JFrame implements ConfigChangeListener
 
 /*=========================================================================
   
+  addPageLoadListener
+
+=========================================================================*/
+  public void addPageLoadListener (PageLoadListener l)
+    {
+    pageLoadListeners.add (l);
+    }
+
+/*=========================================================================
+  
   applyInitialStyles 
 
 =========================================================================*/
@@ -290,20 +306,19 @@ public class MainWindow extends JFrame implements ConfigChangeListener
     //   to the previous URL. If we take it off and there _isn'_ a 
     //   previous URL, we can't go anywhere, so we have to put the current
     //   URL back on the stack.
-    URL current = backlinks.pop();
-    if (backlinks.size() > 0)
+    if (linkStack.size() > 1)
       {
-      URL backUrl = backlinks.pop();
+      URL backUrl = linkStack.pop();
+      backUrl = linkStack.peek();
       if (Logger.isDebug())
         Logger.log (getClass().getName(), Logger.DEBUG, "Back URL " + backUrl);
-      loadURI (backUrl);
+      loadFromUri (backUrl, null, true);
       }
     else
       {
       if (Logger.isDebug())
         Logger.log (getClass().getName(), Logger.DEBUG, 
           "back-link stack is empty");
-      backlinks.push (current);
       }
     Logger.out();
     }
@@ -342,6 +357,38 @@ public class MainWindow extends JFrame implements ConfigChangeListener
       }
     }
 
+/*=========================================================================
+  
+  canGoBack  
+
+=========================================================================*/
+  public boolean canGoBack()
+    {
+    return (linkStack.size() > 1);
+    }
+
+/*=========================================================================
+  
+  canGoFwd
+
+=========================================================================*/
+  public boolean canGoFwd()
+    {
+    return !linkStack.isAtTop();
+    }
+
+/*=========================================================================
+  
+  canIdentity
+
+=========================================================================*/
+  /** Returns true if the page last loaded can accept a client
+      certificate. 
+  */
+  public boolean canIdentity ()
+    {
+    return ("gemini".equals (baseUri.getProtocol()));
+    }
 
 /*=========================================================================
   
@@ -357,13 +404,15 @@ public class MainWindow extends JFrame implements ConfigChangeListener
     Logger.in();
     if (loadWorker != null)
       {
-      //System.out.println ("Debug message: loadworker not null. If this");
-      //System.out.println (" wasn't the result of cancelling a request,");
-      //System.out.println (" please log a bug!");
       Logger.log (getClass().getName(), Logger.DEBUG, 
          "Cancelling loadWorker");
       loadWorker.cancel (true);
       if (loadTimer != null) loadTimer.stop();
+      // Nasty -- cancel() can kill the download thread without the worker's
+      //   done() ever being called. So we have to set up the user interface
+      //   as if the download had completed, even though it probably didn't,
+      //   else all the controls will be left in the "page loading" state.
+      firePageLoadListenersLoaded();
       loadTimer = null;
       }
     else
@@ -563,9 +612,9 @@ public class MainWindow extends JFrame implements ConfigChangeListener
     zoomOutMenuItem.addActionListener((event) -> menuCommandZoomOut());
     viewMenu.add (zoomOutMenuItem);
     viewMenu.add (new JSeparator());
-    JMenuItem refreshMenuItem = createMenuItem ("view_refresh"); 
-    refreshMenuItem.addActionListener((event) -> menuCommandReload());
-    viewMenu.add (refreshMenuItem);
+    JMenuItem reloadPageMenuItem = createMenuItem ("view_reload"); 
+    reloadPageMenuItem.addActionListener((event) -> menuCommandReload());
+    viewMenu.add (reloadPageMenuItem);
 
     // Bookmark menu
     JMenu bookmarksMenu = createTopLevelMenu ("bookmarks");
@@ -579,9 +628,9 @@ public class MainWindow extends JFrame implements ConfigChangeListener
 
     bookmarksMenu.addMenuListener (new javax.swing.event.MenuListener()
       {
-      public void menuCanceled (javax.swing.event.MenuEvent e)
-        {
-        }
+      public void menuCanceled (javax.swing.event.MenuEvent e) {}
+      public void menuDeselected (javax.swing.event.MenuEvent e) {}
+
       public void menuSelected (javax.swing.event.MenuEvent e)
         {
         bookmarksMenu.removeAll();
@@ -610,10 +659,6 @@ public class MainWindow extends JFrame implements ConfigChangeListener
             item.setMnemonic (KeyEvent.VK_0 + i);
           }
         }
-
-      public void menuDeselected (javax.swing.event.MenuEvent e)
-        {
-        }
       });
 
     // Feeds menu
@@ -639,6 +684,9 @@ public class MainWindow extends JFrame implements ConfigChangeListener
     JMenuItem backMenuItem = createMenuItem ("go_back"); 
     backMenuItem.addActionListener((event) -> menuCommandBack());
     goMenu.add (backMenuItem);
+    JMenuItem fwdMenuItem = createMenuItem ("go_forward"); 
+    fwdMenuItem.addActionListener((event) -> menuCommandFwd());
+    goMenu.add (fwdMenuItem);
     JMenuItem homeMenuItem = createMenuItem ("go_home"); 
     homeMenuItem.addActionListener((event) -> menuCommandHome());
     goMenu.add (homeMenuItem);
@@ -649,6 +697,19 @@ public class MainWindow extends JFrame implements ConfigChangeListener
     JMenuItem stopMenuItem = createMenuItem ("go_stop"); 
     stopMenuItem.addActionListener((event) -> menuCommandStop());
     goMenu.add (stopMenuItem);
+
+    goMenu.addMenuListener (new javax.swing.event.MenuListener()
+      {
+      public void menuCanceled (javax.swing.event.MenuEvent e) { }
+      public void menuDeselected (javax.swing.event.MenuEvent e) { }
+
+      public void menuSelected (javax.swing.event.MenuEvent e)
+        {
+        backMenuItem.setEnabled (canGoBack());
+        fwdMenuItem.setEnabled (canGoFwd());
+        stopMenuItem.setEnabled (isLoading());
+        }
+      });
 
     // Tools menu
     JMenu toolsMenu = createTopLevelMenu ("tools");
@@ -668,6 +729,18 @@ public class MainWindow extends JFrame implements ConfigChangeListener
     JMenuItem feedManagerMenuItem = createMenuItem ("tools_feed_manager"); 
     feedManagerMenuItem.addActionListener((event) -> menuCommandFeedManager());
     toolsMenu.add (feedManagerMenuItem);
+
+    toolsMenu.addMenuListener (new javax.swing.event.MenuListener()
+      {
+      public void menuCanceled (javax.swing.event.MenuEvent e) { }
+      public void menuDeselected (javax.swing.event.MenuEvent e) { }
+
+      public void menuSelected (javax.swing.event.MenuEvent e)
+        {
+        identityMenuItem.setEnabled (canIdentity());
+        serverCertMenuItem.setEnabled (hasServerCert());
+        }
+      });
 
     // Help menu
     JMenu helpMenu = createTopLevelMenu ("help");
@@ -741,33 +814,33 @@ public class MainWindow extends JFrame implements ConfigChangeListener
   downloadURIToDownloads 
 
 =========================================================================*/
-/** Get a sensible filename in the Downloads directory, and then
-    call downloadURI.
-*/
-void downloadURIToDownloads (URL url)
-  {
-  String path = url.getPath();
-  File p = new File (path);
-  String name = p.getName();
-  String extension = "";
-  int i = name.lastIndexOf('.');
-  if (i > 0) 
+  /** Get a sensible filename in the Downloads directory, and then
+      call downloadURI.
+  */
+  void downloadURIToDownloads (URL url)
     {
-    extension = name.substring (i);
-    name = name.substring (0, i);
-    }
-  
-  i = 0; 
-  String tryFilename;
-  do
-    {
-    tryFilename = config.getDownloadsDir() + File.separator + 
-       name + ((i == 0) ? "" : "(" + i + ")") + extension;
-    i++;
-    } while (new File(tryFilename).exists());
+    String path = url.getPath();
+    File p = new File (path);
+    String name = p.getName();
+    String extension = "";
+    int i = name.lastIndexOf('.');
+    if (i > 0) 
+      {
+      extension = name.substring (i);
+      name = name.substring (0, i);
+      }
+    
+    i = 0; 
+    String tryFilename;
+    do
+      {
+      tryFilename = config.getDownloadsDir() + File.separator + 
+	 name + ((i == 0) ? "" : "(" + i + ")") + extension;
+      i++;
+      } while (new File(tryFilename).exists());
 
-  downloadURI (url.toString(), new File(tryFilename), null);
-  }
+    downloadURI (url.toString(), new File(tryFilename), null);
+    }
 
 /*=========================================================================
   
@@ -814,7 +887,6 @@ private void downloadAndInvokeDesktop (URL url)
     {
     reportException (null, e);
     }
-
   }
 
 /*=========================================================================
@@ -951,6 +1023,51 @@ void ensureFeedManagerDialogVisible()
 
 /*=========================================================================
   
+  firePageLoadListenersLoaded
+
+=========================================================================*/
+  private void firePageLoadListenersLoaded() 
+    {
+    for (PageLoadListener l : pageLoadListeners)
+      {
+      l.pageLoaded(); 
+      }
+    }
+
+/*=========================================================================
+  
+  firePageLoadListenersLoading
+
+=========================================================================*/
+  private void firePageLoadListenersLoading() 
+    {
+    for (PageLoadListener l : pageLoadListeners)
+      {
+      l.pageLoading(); 
+      }
+    }
+
+/*=========================================================================
+  
+   fwd 
+
+=========================================================================*/
+  /** Advance to the next page in the link stack, if there is one.
+  */
+  public void fwd()
+    {
+    Logger.in();
+    URL next = linkStack.advance();
+    //System.out.println ("next=" + next);
+    if (next != null)
+      {
+      loadFromUri (next, null, true);
+      }
+    Logger.out();
+    }
+
+/*=========================================================================
+  
    getCurrentURI 
 
 =========================================================================*/
@@ -1050,34 +1167,6 @@ void ensureFeedManagerDialogVisible()
 
 /*=========================================================================
   
-   getRootUri 
-
-=========================================================================*/
-  /**
-   Get the site root. What that means depends on the URI. In particular,
-   URIs containing a username (host:port/~fred) have their root at the
-   user's top-level directory, not the server's top-level directory. 
-  */
-  private URL getRootUri (URL baseUri) throws MalformedURLException
-    {
-    String path = baseUri.getPath();
-    if (path.startsWith ("/~"))
-      {
-      String temp = path.substring (2);
-      int i = temp.indexOf ("/"); 
-      temp = temp.substring (0, i >= 0 ? i : 0);
-      java.net.URL newUrl = new URL (baseUri, "/~" + temp + "/");
-      return newUrl;
-      }
-    else
-      {
-      java.net.URL newUrl = new URL (baseUri, "/"); 
-      return newUrl;
-      }
-    }
-
-/*=========================================================================
-  
   handleStatus10 
 
 =========================================================================*/
@@ -1104,7 +1193,7 @@ void ensureFeedManagerDialogVisible()
       if (Logger.isDebug())
         Logger.log (getClass().getName(), Logger.DEBUG, 
           "Retrying URL " + retryUrl);
-      loadFromUri (retryUrl, str); 
+      loadFromUri (retryUrl, str, false); 
       }
     Logger.out();
     }
@@ -1164,6 +1253,31 @@ void ensureFeedManagerDialogVisible()
       reportException (url.toString(), e);
       }
     Logger.out();
+    }
+
+/*=========================================================================
+  
+  hasServerCert 
+
+=========================================================================*/
+  /** Returns true if the page last loaded provided a server 
+      certificate. 
+  */
+  public boolean hasServerCert()
+    {
+    if ("gemini".equals (baseUri.getProtocol())) return true;
+    if ("mark".equals (baseUri.getProtocol())) return true;
+    return false;
+    }
+
+/*=========================================================================
+  
+  isLoading
+
+=========================================================================*/
+  public boolean isLoading()
+    {
+    return loadWorker != null;
     }
 
 /*=========================================================================
@@ -1243,71 +1357,54 @@ void ensureFeedManagerDialogVisible()
   the server. We'll use the MIME type and/or filename to decide what
   to do with the response.
   */
-  private void handleResponseContent (URL fullUrl, ResponseContent gc)
+  private void handleResponseContent (URL fullUrl, ResponseContent gc, 
+            boolean preserveFwdLinks)
     {
     Logger.in();
     String mime = gc.getMime();
-    //System.out.println ("MIME=" + mime);
+    baseUri = fullUrl;
     if (Logger.isDebug())
       Logger.log (getClass().getName(), Logger.DEBUG, "Content is " + mime);
     URL url = gc.getURL(); 
     String urlStr = url.toString();
     if (mime.startsWith ("text/gemini") || urlStr.endsWith (".gmi"))
       {
-      baseUri = fullUrl; 
       String encoding = FileUtil.getEncodingFromMime (mime);
       renderGemtext (gc.getContent(), encoding);
-      topBar.showUrl (fullUrl.toString());
-      backlinks.push (fullUrl);
-      setLastContent (gc);
+      updateUIForNewPage (fullUrl, gc, preserveFwdLinks);
       }
     else if (mime.startsWith ("text/gophermap")|| 
         urlStr.endsWith (".gopher")) // Not a real MIME
       {
-      baseUri = fullUrl; 
       String encoding = FileUtil.getEncodingFromMime (mime);
       renderGophermap (gc.getContent(), encoding);
-      topBar.showUrl (fullUrl.toString());
-      setLastContent (gc);
-      backlinks.push (fullUrl);
+      updateUIForNewPage (fullUrl, gc, preserveFwdLinks);
       }
     else if (mime.startsWith ("text/plain") || urlStr.endsWith (".txt"))
       {
-      baseUri = fullUrl; 
       String encoding = FileUtil.getEncodingFromMime (mime);
       renderPlain (gc.getContent(), encoding);
-      topBar.showUrl (fullUrl.toString());
-      backlinks.push (fullUrl);
-      setLastContent (gc);
+      updateUIForNewPage (fullUrl, gc, preserveFwdLinks);
       }
     else if (mime.startsWith ("text/nex")) // Not a real MIME
       {
-      baseUri = fullUrl; 
       String encoding = FileUtil.getEncodingFromMime (mime);
       renderNex (gc.getContent(), encoding);
-      topBar.showUrl (fullUrl.toString());
-      setLastContent (gc);
-      backlinks.push (fullUrl);
+      updateUIForNewPage (fullUrl, gc, preserveFwdLinks);
       }
     else if (mime.startsWith ("text/markdown") || urlStr.endsWith (".md"))
       {
-      baseUri = fullUrl; 
       String encoding = FileUtil.getEncodingFromMime (mime);
       renderMarkdown (gc.getContent(), encoding);
-      topBar.showUrl (fullUrl.toString());
-      setLastContent (gc);
-      backlinks.push (fullUrl);
+      updateUIForNewPage (fullUrl, gc, preserveFwdLinks);
       }
     else if (mime.startsWith ("application/atom+xml"))
       {
       // MIME types for Atom feeds are often ambiguous, but this
       //   one is not. Just invoke the converter.
-      baseUri = fullUrl; 
       String encoding = FileUtil.getEncodingFromMime (mime);
       renderAtom (gc.getContent(), encoding);
-      topBar.showUrl (fullUrl.toString());
-      setLastContent (gc);
-      backlinks.push (fullUrl);
+      updateUIForNewPage (fullUrl, gc, preserveFwdLinks);
       }
     else if (mime.startsWith ("text/xml") 
          || mime.startsWith ("application/xml"))
@@ -1329,11 +1426,8 @@ void ensureFeedManagerDialogVisible()
     
       if (xml.indexOf ("<feed ") >= 0)
         {
-        baseUri = fullUrl; 
         renderAtom (gc.getContent(), encoding);
-        topBar.showUrl (fullUrl.toString());
-        setLastContent (gc);
-        backlinks.push (fullUrl);
+        updateUIForNewPage (fullUrl, gc, preserveFwdLinks);
         }
       else
         {
@@ -1364,10 +1458,16 @@ void ensureFeedManagerDialogVisible()
 =========================================================================*/
   /** We have a gemini:// or spartan:// URL. Load it through its 
       content handler.
+
       If the qparam arg is non-null, it is appended as a query parameter 
       after URL-encoding (which is fussy in Gemini).  
+
+      The preserveFwdLinks argument is usually false, meaning that the
+      link stack will be adjusted after loading. We don't want to
+      do that if we're loading in response to a back or fwd operation.
   */
-  private void loadFromUri (URL url, String qparam)
+  private void loadFromUri (URL url, String qparam, 
+            boolean preserveFwdLinks)
     {
     Logger.in();
     if (Logger.isDebug())
@@ -1408,6 +1508,7 @@ void ensureFeedManagerDialogVisible()
 
     final URL fullUrl = url;
 
+    firePageLoadListenersLoading();
     loadWorker = new SwingWorker()  
       { 
       ResponseContent gc = null;
@@ -1457,11 +1558,11 @@ void ensureFeedManagerDialogVisible()
 	  Exception e = gc.getException();
 	  if (e == null)
 	    {
-	    handleResponseContent (fullUrl, gc);
-	    setCaptionFromResponse (fullUrl, gc);
+	    handleResponseContent (fullUrl, gc, preserveFwdLinks);
 	    }
 	 else
 	    {
+            firePageLoadListenersLoaded();
 	    if (e instanceof RetryWithInputException)
 	      {
 	      // Load worked must have finished, if we get this far
@@ -1507,6 +1608,13 @@ void ensureFeedManagerDialogVisible()
 	      }
 	    }
 	  }
+        else
+          { 
+          // If cancelled. We still need to update the UI, or
+          //   we'll be left with things disabled that ought to
+          //   be enabled
+          firePageLoadListenersLoaded();
+          }
 	loadWorker = null;
 	}
       };
@@ -1605,11 +1713,9 @@ void ensureFeedManagerDialogVisible()
       Logger.log (getClass().getName(), Logger.DEBUG,  
          "Embedding image URL into HTML: " + url);
 
-    removeLastContent();
     setHtml ("<img src=\"" + url + "\"/>");
     topBar.showUrl (url.toString());
-    backlinks.push (url);
-    setCaptionFromResponse (url, null);
+    updateUIForNewPage (url, null, false);
     Logger.out();
     }
 
@@ -1637,13 +1743,17 @@ void ensureFeedManagerDialogVisible()
       { 
       if (uri.getProtocol().equals ("gemini"))
 	{
-	loadFromUri (uri, null);
+	loadFromUri (uri, null, false);
         // Changed: don't set baseUri here, but when the response completes
 	//baseUri = uri;
 	}
+      else if (uri.getProtocol().equals ("mark"))
+	{
+	loadFromUri (uri, null, false);
+	}
       else if (uri.getProtocol().equals ("spartan"))
 	{
-	loadFromUri (uri, null);
+	loadFromUri (uri, null, false);
 	//baseUri = uri;
 	}
       else if (uri.getProtocol().equals ("gopher"))
@@ -1658,30 +1768,30 @@ void ensureFeedManagerDialogVisible()
 	    {
             try
               {
-	      loadFromUri (uri, str); 
+	      loadFromUri (uri, str, false); 
               } catch (Exception e){}
 	  //  baseUri = uri;
 	    }
           }
         else
           {
-	  loadFromUri (uri, null);
+	  loadFromUri (uri, null, false);
 	  //baseUri = uri;
           }
 	}
       else if (uri.getProtocol().equals ("nex"))
 	{
-	loadFromUri (uri, null);
+	loadFromUri (uri, null, false);
 	//baseUri = uri;
 	}
       else if (uri.getProtocol().equals ("about"))
 	{
-	loadFromUri (uri, null);
+	loadFromUri (uri, null, false);
 	//baseUri = uri;
 	}
       else if (uri.getProtocol().equals ("file"))
 	{
-	loadFromUri (uri, null);
+	loadFromUri (uri, null, false);
 	//baseUri = uri;
 	}
       else
@@ -1862,6 +1972,18 @@ void ensureFeedManagerDialogVisible()
 
 /*=========================================================================
   
+   menuCommandFwd
+
+=========================================================================*/
+  private void menuCommandFwd()
+    {
+    Logger.in();
+    fwd();
+    Logger.out();
+    }
+
+/*=========================================================================
+  
    menuCommandReleaseNotes
 
 =========================================================================*/
@@ -1950,20 +2072,7 @@ void ensureFeedManagerDialogVisible()
   private void menuCommandReload()
     {
     Logger.in();
-    applyInitialStyles ();
-    if (baseUri != null)
-      {
-      // This is potentially nasty. We have to pop the back-link at TOS
-      // because loadURI() will replace it. But loadURI() won't replace
-      // it unless the load succeeds -- we don't want a dead link lurking
-      // on the stack. But loadURI() won't do this itself -- it will 
-      // schedule it to be done when the load completes (if it completes).
-      // So we pop the TOS here, with no guarantee that it will actually
-      // get put back. In practice, we're refreshing a link that previously
-      // loaded OK; so it should be fine. Still, it's a bit ugly.
-      backlinks.pop();
-      loadURI (baseUri);
-      }
+    reload();
     Logger.out();
     }
 
@@ -1977,7 +2086,7 @@ void ensureFeedManagerDialogVisible()
     Logger.in();
     try
       {
-      loadURI (getRootUri (baseUri));
+      loadURI (FileUtil.getRootUri (baseUri));
       }
     catch (Exception e)
       {
@@ -2197,29 +2306,19 @@ void ensureFeedManagerDialogVisible()
 
 /*=========================================================================
   
-   refresh 
+   reload
 
 =========================================================================*/
   /** Reload the current URL. That is, fetch the data from the server
       again, and render it in the viewer again.
   */
-  public void refresh()
+  public void reload()
     {
     Logger.in();
-    // XXX System.out.println ("baseur=" + baseUri);
     applyInitialStyles ();
     if (baseUri != null)
       {
-      // This is potentially nasty. We have to pop the back-link at TOS
-      // because loadURI() will replace it. But loadURI() won't replace
-      // it unless the load succeeds -- we don't want a dead link lurking
-      // on the stack. But loadURI() won't do this itself -- it will 
-      // schedule it to be done when the load completes (if it completes).
-      // So we pop the TOS here, with no guarantee that it will actually
-      // get put back. In practice, we're refreshing a link that previously
-      // loaded OK; so it should be fine. Still, it's a bit ugly.
-      backlinks.pop();
-      loadURI (baseUri);
+      loadFromUri (baseUri, null, true);
       }
     Logger.out();
     }
@@ -2287,14 +2386,16 @@ void ensureFeedManagerDialogVisible()
     linkMenu.add (downloadMenuItem);
 
     String contentType = FileUtil.guessMimeTypeFromFilename (href); 
-    if (contentType.startsWith ("audio") || contentType.startsWith ("video"))
+    if (contentType != null)
       {
-      JMenuItem streamMenuItem = 
-	new JMenuItem (menusBundle.getString ("context_stream"));
-      streamMenuItem.addActionListener((event) -> streamOut (href));
-      linkMenu.add (streamMenuItem);
+      if (contentType.startsWith ("audio") || contentType.startsWith ("video"))
+	{
+	JMenuItem streamMenuItem = 
+	  new JMenuItem (menusBundle.getString ("context_stream"));
+	streamMenuItem.addActionListener((event) -> streamOut (href));
+	linkMenu.add (streamMenuItem);
+	}
       }
-
     linkMenu.show (jEditorPane, x, y); 
 
     Logger.out();
@@ -2370,6 +2471,16 @@ void ensureFeedManagerDialogVisible()
     Logger.in();
     Config.getConfig().load();
     Logger.out();
+    }
+
+/*=========================================================================
+  
+  removePageLoadListener
+
+=========================================================================*/
+  public void removePageLoadListener (PageLoadListener l)
+    {
+    pageLoadListeners.remove (l);
     }
 
 /*=========================================================================
@@ -2744,5 +2855,31 @@ void ensureFeedManagerDialogVisible()
     Logger.out();
     }
 
-  }
+/*=========================================================================
+  
+   updateUIForNewPage 
+
+=========================================================================*/
+  /** Set up the buttons, caption, etc., to indicate a new page is
+      in the viewer. 
+  */
+  private void updateUIForNewPage (URL fullUrl, ResponseContent rc, 
+      boolean preserveFwdLinks)
+    {
+    baseUri = fullUrl; 
+    setCaptionFromResponse (fullUrl, rc);
+    topBar.showUrl (fullUrl.toString());
+    if (!preserveFwdLinks)
+      {
+      linkStack.push (fullUrl);
+      linkStack.setTopToCurrent();
+      }
+
+    if (rc != null)
+      setLastContent (rc);
+    else
+      removeLastContent();
+    firePageLoadListenersLoaded();
+    }
+  } // End of MainWindow
 

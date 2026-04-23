@@ -1,21 +1,3 @@
-Improve the layout of the Downloads dialog.
+Upcoming work is now tracked in GitHub:
 
-? `gophers:` support.
-
-Make downloads directory location configurable.
-
-Find a way to indicate when implicit page rendering is ongoing, and when it's
-complete.  It's not usually a problem for text pages, but images sometimes take
-a while to transfer, and it's not obvious what progress is being made.  This is
-tricky to implement, because the embedded image support is provided by the JVM,
-which doesn't expose any hooks that I can find to allow it to be monitored.
-
-Add clickable links to in-line images within Markdown documents. At present,
-we just get the image, so there's no way to do anything with it.
-
-Catch redirect loops. Easy-ish to do, but I just haven't gotten to it.
-
-? Find a way to supply emoji fonts internally. This isn't easy, unless I want to 
-apply a font to every single element of the document viewer in code. And even
-this it might not work -- Java Swing is funny about this kind of thing.
-
+https://github.com/kevinboone/caztor/issues

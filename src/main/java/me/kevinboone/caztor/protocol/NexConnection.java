@@ -24,6 +24,7 @@ public class NexConnection extends URLConnection
   private static StatusHandler statusHandler = StatusHandler.getInstance();
   private final static ResourceBundle messagesBundle = 
     ResourceBundle.getBundle ("me.kevinboone.caztor.bundles.Messages");
+  private static final Config config = Config.getConfig();
 
   public NexConnection (URL url) 
     {
@@ -40,7 +41,11 @@ public class NexConnection extends URLConnection
     int port = getURL().getPort();
     if (port == -1) port = 1900;
 
-    s = new Socket (host, port);
+    int timeoutMs = config.getConnectTimeout() * 1000;
+
+    s = new Socket ();
+    s.connect (new InetSocketAddress (host, port), timeoutMs);
+    is = s.getInputStream();
     is = s.getInputStream();
     OutputStream os = s.getOutputStream();
     PrintStream pos = new PrintStream (os);
