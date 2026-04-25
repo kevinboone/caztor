@@ -12,7 +12,7 @@ package me.kevinboone.caztor.swing;
 import java.net.*;
 import java.io.*;
 import java.util.*;
-import me.kevinboone.caztor.Constants;
+import me.kevinboone.caztor.Version;
 import me.kevinboone.caztor.base.*;
 
 /** The main bookmark handler. This class is responsible for adding
@@ -81,7 +81,7 @@ public class DefaultBookmarkHandler implements BookmarkHandler
     String bookmarksFile = config.getBookmarksFile();
     EditFileDialog d = new EditFileDialog (mainWindow, 
         captionsBundle.getString ("bookmarks"),
-          bookmarksFile, Constants.DOC_EDIT_BOOKMARKS);
+          bookmarksFile, Strings.DOC_EDIT_BOOKMARKS);
     d.setVisible (true);
     if (d.didSave())
       {

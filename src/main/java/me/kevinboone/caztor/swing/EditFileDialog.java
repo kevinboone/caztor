@@ -16,7 +16,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.stream.Collectors;
 import me.kevinboone.caztor.base.*;
-import me.kevinboone.caztor.Constants;
+import me.kevinboone.caztor.Version;
 
 /** A simple file editor, which Caztor uses to edit the bookmarks file,
     settings file, and perhaps others in future. It's pretty rudimentary,
@@ -37,7 +37,7 @@ private String docUrl;
 public EditFileDialog (JFrame parent, String caption, 
           String filename, String docUrl) throws IOException
   {
-  super (parent, Constants.APP_NAME, Dialog.ModalityType.DOCUMENT_MODAL);
+  super (parent, Version.APP_NAME, Dialog.ModalityType.DOCUMENT_MODAL);
   
   this.docUrl = docUrl;
 

@@ -68,6 +68,8 @@ public class Messages extends ListResourceBundle
     {"streamed", "Streamed"},
     {"streaming", "Streaming..."},
     {"stream_interrupted", "Stream playback interrupted"},
+    {"too_many_redirects", 
+       "Request was redirected too many times: there might be a redirection loop"},
     {"unknown_host", "Unknown host"},
     {"unknown_url", "Unknown URL"},
     {"unsup_encoding_resp", "Server returned a response with an unsupported encoding"},

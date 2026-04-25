@@ -8,7 +8,6 @@
 
 =========================================================================*/
 package me.kevinboone.caztor.base;
-import me.kevinboone.caztor.Constants;
 
 /** An exception thrown to indicate a problem with feed parsing.
 */

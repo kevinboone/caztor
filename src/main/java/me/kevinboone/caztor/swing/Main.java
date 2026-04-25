@@ -16,7 +16,7 @@ import java.security.cert.X509Certificate;
 import java.net.*;
 import java.io.*;
 import java.awt.*;
-import me.kevinboone.caztor.Constants;
+import me.kevinboone.caztor.Version;
 import me.kevinboone.caztor.base.*;
 
 import java.security.*;
@@ -138,7 +138,7 @@ public class Main
     else
       message = messagesBundle.getString ("query_cancel_downloads"); 
 
-    if (JOptionPane.showConfirmDialog (null, message, Constants.APP_NAME,
+    if (JOptionPane.showConfirmDialog (null, message, Version.APP_NAME,
       JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)
         == JOptionPane.YES_OPTION)
       return true;

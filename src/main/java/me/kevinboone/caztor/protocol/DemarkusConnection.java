@@ -64,10 +64,12 @@ public class DemarkusConnection extends URLConnection
       return; 
       }
 
+    System.setProperty("tech.kwik.core.no-security-warnings", "true");
     quicConnection = QuicClientConnection.newBuilder()
 	.host (url.getHost())
 	.port (url.getPort() > 0 ? url.getPort() : DEFLT_PORT)
 	.applicationProtocol (DEMARKUS_APID)
+        .noServerCertificateCheck()
 	.build();
     quicConnection.connect();
     QuicStream quicStream = quicConnection.createStream (true);
@@ -80,7 +82,7 @@ public class DemarkusConnection extends URLConnection
       pos.print ("/");
     else
       pos.print (url.getPath());
-    pos.print ("\r\n");
+    pos.print ("\n"); // No \r for this protocol
     pos.close();
     output.close();
     String line = readLine (is);

@@ -16,7 +16,6 @@ import java.util.*;
 import java.awt.event.*;
 import javax.swing.text.*;
 import me.kevinboone.caztor.base.*;
-import me.kevinboone.caztor.Constants;
 
 /** Implements the "Appearance" tab of the SettingsDialog.
 */

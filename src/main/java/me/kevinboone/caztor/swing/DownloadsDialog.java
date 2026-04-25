@@ -15,7 +15,6 @@ import java.util.*;
 import java.net.*;
 import java.awt.event.*;
 import me.kevinboone.caztor.base.*;
-import me.kevinboone.caztor.Constants;
 
 /** DownloadsDialog shows the contents of the DownloadsMonitor as a 
     JFrame. The main display is a Box wrapped in a Scrollpane.
@@ -309,7 +308,7 @@ public class DownloadsDialog extends JFrame implements DownloadMonitorListener
 
   private void handleDocs()
     {
-    MainWindow.newWindow (Constants.DOC_DOWNLOADS_DIALOG,
+    MainWindow.newWindow (Strings.DOC_DOWNLOADS_DIALOG,
       "Downloads dialog"); // Caption will not show when loaded
     }
 

@@ -15,7 +15,6 @@ import java.io.*;
 import java.util.*;
 import java.awt.event.*;
 import me.kevinboone.caztor.base.*;
-import me.kevinboone.caztor.Constants;
 
 /** Implements the Theme tab of the Settings dialog. */
 public class ThemeSettingsPane extends SettingsPane
@@ -47,6 +46,7 @@ public class ThemeSettingsPane extends SettingsPane
     v.add ("light");
     v.add ("light_pastel");
     v.add ("dark");
+    v.add ("dark_mono");
     v.add ("dark_pastel");
     v.add ("retro");
     v.add ("custom");

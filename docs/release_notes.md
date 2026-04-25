@@ -1,22 +1,24 @@
 # Caztor release notes
 
+## Caztor 1.0.2
+
+- Default download directory can be set in the configuration file.
+- The number of redirections is now limited, to protect against
+  redirection loops.
+- Added "dark\_mono" theme.
+
 ## Caztor 1.0.1
 
-Preliminary, view-only support for the Demarkus (`mark:`) protocol.
-
-URL bar filter now sorts matches in alpha order, putting shorter URLs towards
-the top, which seems to be a bit more convenient.
-
-You can now right-click an image to get the context menu, as well as the
-image's link text.
-
-There's now a "forward" toolbar button and _Go|Forward_ menu, which reverses
-the effect of "back" navigation.
- 
-Toolbar buttons and menus now enable/disable themselves according to context. 
-
-All protocols are subject to a configurable connection timeout, defaulting to
-10 seconds.
+- Preliminary, view-only support for the Demarkus (`mark:`) protocol.
+- URL bar filter now sorts matches in alpha order, putting shorter URLs towards
+  the top, which seems to be a bit more convenient.
+- You can now right-click an image to get the context menu, as well as the
+  image's link text.
+- There's now a "forward" toolbar button and _Go|Forward_ menu, which reverses
+  the effect of "back" navigation.
+- Toolbar buttons and menus now enable/disable themselves according to context. 
+- All protocols are subject to a configurable connection timeout, defaulting to
+  10 seconds.
 
 ## Caztor 1.0.0 
 

@@ -17,7 +17,6 @@ import java.text.*;
 import javax.xml.transform.*;
 import javax.xml.transform.stream.*;
 import java.time.format.DateTimeFormatter;
-import me.kevinboone.caztor.Constants;
 import me.kevinboone.caztor.base.*;
 
 /** The main feed handler. This class is responsible for adding
@@ -135,7 +134,7 @@ public class DefaultFeedHandler implements FeedHandler
     String feedsFile = config.getFeedsFile();
     EditFileDialog d = new EditFileDialog (null, 
         captionsBundle.getString ("feeds"),
-          feedsFile, Constants.DOC_EDIT_BOOKMARKS);
+          feedsFile, Strings.DOC_EDIT_BOOKMARKS);
     d.setVisible (true);
     if (d.didSave())
       {

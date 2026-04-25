@@ -12,7 +12,6 @@ package me.kevinboone.caztor.base;
 import java.net.*;
 import java.io.*;
 import java.util.*;
-import me.kevinboone.caztor.Constants;
 import me.kevinboone.caztor.protocol.*;
 
 /** A helper class for downloading content in background threads. 
@@ -34,7 +33,7 @@ public class ContentFetcher
     {
     try
       {
-      return fetch (new URL (url));
+      return _fetch (new URL (url), 0);
       }
     catch (MalformedURLException e)
       {
@@ -60,6 +59,16 @@ public class ContentFetcher
     for large or unknown remote items.
   */
   public static ResponseContent fetch (URL url)
+    {
+    return _fetch (url, 0);
+    }
+
+/*=========================================================================
+  
+  _fetch
+
+=========================================================================*/
+  public static ResponseContent _fetch (URL url, int redirects)
     {
     ResponseContent rc;
     rc = new ResponseContent (url);
@@ -97,8 +106,10 @@ public class ContentFetcher
       }
     catch (RedirectedException e)
       {
-      // TODO check for redirect loops
-      return fetch (e.getURL());
+      if (redirects < Config.getConfig().getMaxRedirects())
+        return _fetch (e.getURL(), redirects + 1);
+      else
+        rc.setException (e);
       }
     catch (IOException e)
       {

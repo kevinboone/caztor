@@ -8,7 +8,6 @@
 
 =========================================================================*/
 package me.kevinboone.caztor.base;
-import me.kevinboone.caztor.Constants;
 
 /** This exception is thrown from methods in the IdentUtil class, to
     indicate that an identity name selected by the user is invalid in

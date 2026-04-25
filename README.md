@@ -73,7 +73,7 @@ work.
 - Authentication using per-server client certificates
 - Built-in client certificate manager, which can create new certificates and
   incorporate existing ones
-- Text styling can be configured to suit the display and user preference
+- Several built-in colour themes, with the option to add more using CSS 
 - Uses anti-aliased font rendering for a smoother text appearance
 - Fetches documents asynchronously to improve user interface responsiveness
 - Download manager
@@ -422,4 +422,13 @@ Caztor version 1.0.1 -- April 2026
 - Added a connection timeout that defaults to ten seconds
 - Preliminary Demarkus browsing support
 - Updated documentation
+
+Caztor version 1.0.2 -- April 2026
+
+- Default download directory can be set in the configuration file
+- Imposed a configuration limit on the number of redirections allowed
+  to a single request
+- Added "dark\_mono" theme
+- Disabled certificate verification for Demarkus, in line with other 
+  protocols
 

@@ -15,7 +15,6 @@ import java.util.*;
 import java.net.*;
 import java.awt.event.*;
 import me.kevinboone.caztor.base.*;
-import me.kevinboone.caztor.Constants;
 
 /** FeedManagerDialog provides the interface to the FeedManager, and 
     shows the progress of feed aggregation. 
@@ -226,7 +225,7 @@ public class FeedManagerDialog extends JFrame
   =========================================================================*/
   private void handleDocs()
     {
-    MainWindow.newWindow (Constants.DOC_FEED_MANAGER_DIALOG,
+    MainWindow.newWindow (Strings.DOC_FEED_MANAGER_DIALOG,
       "Feed Manager dialog"); // Caption will not show when loaded
     }
 

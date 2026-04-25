@@ -17,7 +17,6 @@ import java.util.*;
 import java.awt.event.*;
 import java.net.URL;
 import java.net.URLEncoder;
-import me.kevinboone.caztor.Constants;
 import me.kevinboone.caztor.base.*;
 import me.kevinboone.caztor.ssl.*;
 
@@ -194,7 +193,7 @@ public NewIdentityDialog (Window parent, MainWindow mainWindow)
 =========================================================================*/
 private void handleDocs()
   {
-  mainWindow.newWindow (Constants.DOC_NEW_IDENT_DIALOG,
+  mainWindow.newWindow (Strings.DOC_NEW_IDENT_DIALOG,
     "New identity dialog"); // Caption will not show when loaded
   }
 

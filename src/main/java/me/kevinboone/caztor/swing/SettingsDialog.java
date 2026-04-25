@@ -15,7 +15,6 @@ import java.io.*;
 import java.util.*;
 import java.awt.event.*;
 import me.kevinboone.caztor.base.*;
-import me.kevinboone.caztor.Constants;
 
 /** Implements the Settings dialog. This is a hugely complicated chunk
     of code, so I've split each tab of the dialog into its own class,
@@ -170,7 +169,7 @@ public boolean didChange() { return didChange; }
 =========================================================================*/
 private void docs()
   {
-  mainWindow.newWindow (Constants.DOC_SETTINGS_DIALOG,
+  mainWindow.newWindow (Strings.DOC_SETTINGS_DIALOG,
     "Settings dialog"); // Caption will not show when loaded
   }
 

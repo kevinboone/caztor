@@ -22,7 +22,7 @@ Caztor is distributed as a single Java JAR file, and requires
 - Built-in client certificate manager, which can create new certificates and
   incorporate existing ones
 - Uses anti-aliased font rendering for a smoother text appearance
-- Text styling can be configured to suit the display and user preference
+- Several built-in colour themes, with the option to add more using CSS 
 - Fetches documents asynchronously to improve user interface responsiveness
 - Download manager with a user interface, to keep track of asynchronous downloads 
 - Aggregates Atom and gemsub feeds, with a user interface for management and

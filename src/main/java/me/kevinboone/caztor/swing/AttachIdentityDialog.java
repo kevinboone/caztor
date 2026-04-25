@@ -17,7 +17,6 @@ import java.util.*;
 import java.awt.event.*;
 import java.net.URL;
 import java.net.URLEncoder;
-import me.kevinboone.caztor.Constants;
 import me.kevinboone.caztor.base.*;
 import me.kevinboone.caztor.ssl.*;
 
@@ -206,7 +205,7 @@ public AttachIdentityDialog (Window parent, MainWindow mainWindow)
 =========================================================================*/
 private void handleDocs()
   {
-  mainWindow.newWindow (Constants.DOC_ATTACH_IDENT_DIALOG,
+  mainWindow.newWindow (Strings.DOC_ATTACH_IDENT_DIALOG,
     "Attach identity dialog");
   }
 

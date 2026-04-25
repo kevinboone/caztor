@@ -14,7 +14,6 @@ import java.io.*;
 import java.util.*;
 import java.awt.event.*;
 import me.kevinboone.caztor.base.*;
-import me.kevinboone.caztor.Constants;
 
 /** The base class for all the individual tabs of the
     Settings dialog. */

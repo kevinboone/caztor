@@ -16,7 +16,6 @@ import java.util.*;
 import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.security.KeyStore;
-import me.kevinboone.caztor.Constants;
 import me.kevinboone.caztor.base.*;
 
 /** Methods for handling client certificates that are associated with
@@ -81,7 +80,7 @@ public String getIdentForURL (URL url)
   String host = url.getHost();
   if (host != null && host.length() != 0)
     {
-    ident = config.getProperty (Constants.IDENT_TAG + host);
+    ident = config.getProperty (Strings.IDENT_TAG + host);
     }
   if (ident == null)
     {

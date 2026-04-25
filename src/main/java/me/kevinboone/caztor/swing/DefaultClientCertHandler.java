@@ -17,7 +17,6 @@ import java.util.*;
 import javax.swing.*;
 import me.kevinboone.caztor.base.*;
 import me.kevinboone.caztor.ssl.*;
-import me.kevinboone.caztor.Constants;
 
 /** Implements the main user interface to the user identity manager,
     for a specific remote URL. The identity manager UI is 

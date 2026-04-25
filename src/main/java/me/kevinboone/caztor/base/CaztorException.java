@@ -8,7 +8,6 @@
 
 =========================================================================*/
 package me.kevinboone.caztor.base;
-import me.kevinboone.caztor.Constants;
 
 /** This exception was supposed to have been the base for many different
     application exceptions. In practice, it isn't used all that much.

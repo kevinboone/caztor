@@ -17,7 +17,8 @@ import javax.swing.border.EmptyBorder;
 import java.net.*;
 import java.io.*;
 import java.util.*;
-import me.kevinboone.caztor.Constants;
+import me.kevinboone.caztor.Version;
+import me.kevinboone.caztor.Defaults;
 import me.kevinboone.caztor.base.*;
 
 /** A helper class for raising error and information dialogs, to reduce
@@ -50,15 +51,15 @@ public class DialogHelper
     textArea.setWrapStyleWord (true);
     textArea.setLineWrap (true);
     textArea.setEditable (false);
-    textArea.setRows (Constants.DIALOG_ROWS);
-    textArea.setColumns (Constants.DIALOG_COLS);
+    textArea.setRows (Defaults.DIALOG_ROWS);
+    textArea.setColumns (Defaults.DIALOG_COLS);
 
     textArea.setBorder(new EmptyBorder (20, 20, 20, 20));
 
     JScrollPane scrollPane = new JScrollPane (textArea);
 
     JOptionPane.showMessageDialog (parent, scrollPane, 
-         Constants.APP_NAME, JOptionPane.ERROR_MESSAGE); 
+         Version.APP_NAME, JOptionPane.ERROR_MESSAGE); 
     }
 
 /*=========================================================================
@@ -97,15 +98,15 @@ public class DialogHelper
     textArea.setWrapStyleWord (true);
     textArea.setLineWrap (true);
     textArea.setEditable (false);
-    textArea.setRows (Constants.DIALOG_ROWS);
-    textArea.setColumns (Constants.DIALOG_COLS);
+    textArea.setRows (Defaults.DIALOG_ROWS);
+    textArea.setColumns (Defaults.DIALOG_COLS);
 
     textArea.setBorder(new EmptyBorder (20, 20, 20, 20));
 
     JScrollPane scrollPane = new JScrollPane (textArea);
 
     JOptionPane.showMessageDialog (parent, scrollPane, 
-         Constants.APP_NAME, JOptionPane.INFORMATION_MESSAGE); 
+         Version.APP_NAME, JOptionPane.INFORMATION_MESSAGE); 
     }
   }
 

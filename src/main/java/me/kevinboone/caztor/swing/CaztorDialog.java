@@ -18,7 +18,6 @@ import java.util.*;
 import java.awt.event.*;
 import java.net.URL;
 import java.net.URLEncoder;
-import me.kevinboone.caztor.Constants;
 import me.kevinboone.caztor.base.*;
 import me.kevinboone.caztor.ssl.*;
 

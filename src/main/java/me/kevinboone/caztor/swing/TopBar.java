@@ -15,7 +15,6 @@ import java.util.*;
 import java.awt.event.*;
 import javax.swing.*;
 import me.kevinboone.caztor.base.*;
-import me.kevinboone.caztor.Constants;
 
 /**
 The top bar contains the navigation buttons and URL combo box. 

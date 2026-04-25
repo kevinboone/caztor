@@ -15,7 +15,6 @@ import java.io.*;
 import java.util.*;
 import java.awt.event.*;
 import me.kevinboone.caztor.base.*;
-import me.kevinboone.caztor.Constants;
 
 /** Implements the Home tab of the Settings dialog.
 */

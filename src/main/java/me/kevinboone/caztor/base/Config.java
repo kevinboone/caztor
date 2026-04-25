@@ -11,7 +11,8 @@ package me.kevinboone.caztor.base;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.io.*;
-import me.kevinboone.caztor.Constants;
+import me.kevinboone.caztor.Defaults;
+import me.kevinboone.caztor.Defaults;
 import me.kevinboone.caztor.base.*;
 
 /** Retrieves and manages application configuration. Use getConfig() to
@@ -28,11 +29,10 @@ public class Config extends Properties
   private boolean historyEnabled = false;
   private boolean emojiStripBookmarks = false;
 
-  public final static int DEFLT_LOG_LEVEL = Logger.ERROR;
-  public final static boolean DEFLT_EMOJI_STRIP_BOOKMARKS = false;
   public final static boolean DEFLT_GEMTEXT_INLINE_IMAGES = true;
   public final static String DEFLT_UI_DOCUMENT_CUSTOM_CSS = null;
   public final static boolean DEFLT_UI_ICONS_MONO = false;
+  public final static String DEFLT_DOWNLOADS_DIR = null;
   public final static String DEFLT_FEEDS_FILE = null;
   public final static String DEFLT_AGGREGATED_FEEDS_FILE = null;
   public final static String DEFLT_HISTORY_FILE = null;
@@ -58,7 +58,7 @@ public class Config extends Properties
   public void addClientCert (String name, String keystoreFile,
       String keystorePassword) 
     {
-    setProperty (Constants.CLIENTCERT_TAG + name,
+    setProperty (Strings.CLIENTCERT_TAG + name,
       keystoreFile + " " + keystorePassword);
     save();
     }
@@ -84,7 +84,7 @@ public class Config extends Properties
     while (keys.hasMoreElements())
       {
       String key = (String)keys.nextElement();
-      if (key.startsWith (Constants.CONTENT_HANDLER_TAG))
+      if (key.startsWith (Strings.CONTENT_HANDLER_TAG))
         {
         remove (key);
         }
@@ -101,23 +101,23 @@ public class Config extends Properties
   private void deriveProperties()
     {
     bookmarkMaxMenu = Integer.parseInt (getProperty 
-      (Constants.BOOKMARK_MAX_MENU, ""+DEFLT_BOOKMARK_MAX_MENU));
+      (Strings.BOOKMARK_MAX_MENU, ""+DEFLT_BOOKMARK_MAX_MENU));
 
-    logLevel = Integer.parseInt (getProperty (Constants.LOG_LEVEL, 
-      "" + DEFLT_LOG_LEVEL));
+    logLevel = Integer.parseInt (getProperty (Strings.LOG_LEVEL, 
+      "" + Defaults.DEFLT_LOG_LEVEL));
     Logger.setLevel (logLevel);
 
     gemtextInlineImages = getBooleanProperty 
-      (Constants.GEMTEXT_INLINE_IMAGES, DEFLT_GEMTEXT_INLINE_IMAGES);
+      (Strings.GEMTEXT_INLINE_IMAGES, DEFLT_GEMTEXT_INLINE_IMAGES);
    
     urlbarSearchEnabled = getBooleanProperty
-      (Constants.URLBAR_SEARCH_ENABLED, DEFLT_URLBAR_SEARCH_ENABLED); 
+      (Strings.URLBAR_SEARCH_ENABLED, DEFLT_URLBAR_SEARCH_ENABLED); 
 
     historyEnabled = getBooleanProperty 
-      (Constants.HISTORY_ENABLED, DEFLT_HISTORY_ENABLED);
+      (Strings.HISTORY_ENABLED, DEFLT_HISTORY_ENABLED);
 
     emojiStripBookmarks = getBooleanProperty 
-      (Constants.EMOJI_STRIP_BOOKMARKS, DEFLT_EMOJI_STRIP_BOOKMARKS);
+      (Strings.EMOJI_STRIP_BOOKMARKS, Defaults.DEFLT_EMOJI_STRIP_BOOKMARKS);
     }
 
 /*=========================================================================
@@ -157,7 +157,7 @@ public class Config extends Properties
     if (file.exists()) return;
     file.createNewFile();
     FileUtil.appendStringToFile (filename, "# " 
-      + Constants.BOOKMARKS_COMMENTS + "\n");
+      + Strings.BOOKMARKS_COMMENTS + "\n");
     }
 
 /*=========================================================================
@@ -172,7 +172,7 @@ public class Config extends Properties
     if (file.exists()) return;
     file.createNewFile();
     FileUtil.appendStringToFile (filename, "# " 
-      + Constants.FEEDS_COMMENTS + "\n");
+      + Strings.FEEDS_COMMENTS + "\n");
     }
 
 /*=========================================================================
@@ -223,7 +223,7 @@ public class Config extends Properties
 =========================================================================*/
   public int getContentHandlerAction (String mime)
     {
-    String key = Constants.CONTENT_HANDLER_TAG + mime;
+    String key = Strings.CONTENT_HANDLER_TAG + mime;
     String v = getProperty (key, null);
     if (v == null) return -1;
     return Integer.parseInt (v);
@@ -236,7 +236,7 @@ public class Config extends Properties
 =========================================================================*/
   public void setContentHandlerAction (String mime, int action)
     {
-    String key = Constants.CONTENT_HANDLER_TAG + mime;
+    String key = Strings.CONTENT_HANDLER_TAG + mime;
     setProperty (key, "" + action);
     }
 
@@ -248,11 +248,11 @@ public class Config extends Properties
 =========================================================================*/
   public String getAggregatedFeedsFile()
     {
-    String feedsFile = getProperty (Constants.AGGREGATED_FEEDS_FILE, 
+    String feedsFile = getProperty (Strings.AGGREGATED_FEEDS_FILE, 
       DEFLT_AGGREGATED_FEEDS_FILE);
     if (feedsFile == null)
       feedsFile = getStateDir() + File.separator 
-        + Constants.AGGREGATED_FEEDS_FILENAME;
+        + Defaults.AGGREGATED_FEEDS_FILENAME;
     return feedsFile;
     }
 
@@ -264,8 +264,8 @@ public class Config extends Properties
   public String getHomePage()
     {
     Logger.in();
-    String homePage = getProperty (Constants.URL_HOME, 
-      Constants.DEFLT_URL_HOME);
+    String homePage = getProperty (Strings.URL_HOME, 
+      Defaults.DEFLT_URL_HOME);
     Logger.log (getClass().getName(), Logger.INFO, 
       "Home page is " + homePage);
     Logger.out();
@@ -279,10 +279,10 @@ public class Config extends Properties
 =========================================================================*/
   public String getHistoryFile()
     {
-    String historyFile = getProperty (Constants.HISTORY_FILE, 
+    String historyFile = getProperty (Strings.HISTORY_FILE, 
       DEFLT_HISTORY_FILE);
     if (historyFile == null)
-      historyFile = getStateDir() + File.separator + Constants.HISTORY_FILENAME;
+      historyFile = getStateDir() + File.separator + Defaults.HISTORY_FILENAME;
     return historyFile;
     }
 
@@ -293,11 +293,11 @@ public class Config extends Properties
 =========================================================================*/
   public String getBookmarksFile()
     {
-    String bookmarkFile = getProperty (Constants.BOOKMARK_FILE, 
+    String bookmarkFile = getProperty (Strings.BOOKMARK_FILE, 
       DEFLT_BOOKMARK_FILE);
     if (bookmarkFile == null)
       bookmarkFile = getStateDir() + File.separator 
-        + Constants.BOOKMARK_FILENAME;
+        + Defaults.BOOKMARK_FILENAME;
     return bookmarkFile;
     }
 
@@ -309,7 +309,7 @@ public class Config extends Properties
   public int getFeedsMaxAge()
     {
     return Integer.parseInt (getProperty 
-        (Constants.FEEDS_MAX_AGE, Constants.DEFLT_FEEDS_MAX_AGE));
+        (Strings.FEEDS_MAX_AGE, Defaults.DEFLT_FEEDS_MAX_AGE));
     }
 
 /*=========================================================================
@@ -319,11 +319,11 @@ public class Config extends Properties
 =========================================================================*/
   public String getFeedsFile()
     {
-    String feedsFile = getProperty (Constants.FEEDS_FILE, 
+    String feedsFile = getProperty (Strings.FEEDS_FILE, 
       DEFLT_FEEDS_FILE);
     if (feedsFile == null)
       feedsFile = getStateDir() + File.separator 
-        + Constants.FEEDS_FILENAME;
+        + Defaults.FEEDS_FILENAME;
     return feedsFile;
     }
 
@@ -365,7 +365,7 @@ public class Config extends Properties
   public int getInlineImageWidth()
     {
     return Integer.parseInt (getProperty 
-        (Constants.INLINE_IMAGE_WIDTH, Constants.DEFLT_INLINE_IMAGE_WIDTH));
+        (Strings.INLINE_IMAGE_WIDTH, Defaults.DEFLT_INLINE_IMAGE_WIDTH));
     }
 
 /*=========================================================================
@@ -376,7 +376,7 @@ public class Config extends Properties
   public int getNewWindowMode ()
     {
     return Integer.parseInt (getProperty 
-        (Constants.UI_NEW_WINDOW_MODE, Constants.DEFLT_UI_NEW_WINDOW_MODE));
+        (Strings.UI_NEW_WINDOW_MODE, Defaults.DEFLT_UI_NEW_WINDOW_MODE));
     }
 
 /*=========================================================================
@@ -386,7 +386,7 @@ public class Config extends Properties
 =========================================================================*/
   public boolean getFeedsUpdateOnStartup()
     {
-    return getBooleanProperty (Constants.FEEDS_UPDATE_ON_STARTUP, 
+    return getBooleanProperty (Strings.FEEDS_UPDATE_ON_STARTUP, 
       DEFLT_FEEDS_UPDATE_ON_STARTUP);
     }
 
@@ -397,7 +397,7 @@ public class Config extends Properties
 =========================================================================*/
   public boolean getIconsMono()
     {
-    return getBooleanProperty (Constants.UI_ICONS_MONO, DEFLT_UI_ICONS_MONO);
+    return getBooleanProperty (Strings.UI_ICONS_MONO, DEFLT_UI_ICONS_MONO);
     }
 
 /*=========================================================================
@@ -407,8 +407,8 @@ public class Config extends Properties
 =========================================================================*/
   public int getConnectTimeout()
     {
-    return Integer.parseInt (getProperty (Constants.CONNECT_TIMEOUT, 
-      Constants.DEFLT_CONNECT_TIMEOUT));
+    return Integer.parseInt (getProperty (Strings.CONNECT_TIMEOUT, 
+      Defaults.DEFLT_CONNECT_TIMEOUT));
     }
 
 /*=========================================================================
@@ -418,8 +418,8 @@ public class Config extends Properties
 =========================================================================*/
   public int getWindowWidth ()
     {
-    return Integer.parseInt (getProperty (Constants.WINDOW_W, 
-      Constants.DEFLT_WINDOW_W));
+    return Integer.parseInt (getProperty (Strings.WINDOW_W, 
+      Defaults.DEFLT_WINDOW_W));
     }
 
 /*=========================================================================
@@ -429,8 +429,8 @@ public class Config extends Properties
 =========================================================================*/
   public int getWindowHeight ()
     {
-    return Integer.parseInt (getProperty (Constants.WINDOW_H, 
-      Constants.DEFLT_WINDOW_H));
+    return Integer.parseInt (getProperty (Strings.WINDOW_H, 
+      Defaults.DEFLT_WINDOW_H));
     }
 
 /*=========================================================================
@@ -440,7 +440,7 @@ public class Config extends Properties
 =========================================================================*/
   public String getControlFont()
     {
-    return getProperty (Constants.UI_CONTROL_FONT, Constants.
+    return getProperty (Strings.UI_CONTROL_FONT, Defaults.
       DEFLT_UI_CONTROL_FONT);
     }
 
@@ -451,8 +451,8 @@ public class Config extends Properties
 =========================================================================*/
   public String getUserFont()
     {
-    return getProperty (Constants.UI_USER_FONT, 
-      Constants.DEFLT_UI_USER_FONT);
+    return getProperty (Strings.UI_USER_FONT, 
+      Defaults.DEFLT_UI_USER_FONT);
     }
 
 /*=========================================================================
@@ -462,7 +462,7 @@ public class Config extends Properties
 =========================================================================*/
   public String getCustomCSSFile()
     {
-    return getProperty (Constants.UI_DOCUMENT_CUSTOM_CSS, 
+    return getProperty (Strings.UI_DOCUMENT_CUSTOM_CSS, 
       DEFLT_UI_DOCUMENT_CUSTOM_CSS);
     }
 
@@ -473,8 +473,8 @@ public class Config extends Properties
 =========================================================================*/
   public String getTheme()
     {
-    return getProperty (Constants.UI_DOCUMENT_THEME, 
-      Constants.DEFLT_UI_DOCUMENT_THEME);
+    return getProperty (Strings.UI_DOCUMENT_THEME, 
+      Defaults.DEFLT_UI_DOCUMENT_THEME);
     }
 
 /*=========================================================================
@@ -484,8 +484,8 @@ public class Config extends Properties
 =========================================================================*/
   public String getUrlbarSearchUrl()
     {
-    return getProperty (Constants.URLBAR_SEARCH_URL, 
-      Constants.DEFLT_URLBAR_SEARCH_URL);
+    return getProperty (Strings.URLBAR_SEARCH_URL, 
+      Defaults.DEFLT_URLBAR_SEARCH_URL);
     }
 
 /*=========================================================================
@@ -495,8 +495,8 @@ public class Config extends Properties
 =========================================================================*/
   public int getDocumentBaseFontSize()
     {
-    String s = getProperty (Constants.UI_DOCUMENT_FONT_SIZE, 
-      Constants.DEFLT_UI_DOCUMENT_FONT_SIZE);
+    String s = getProperty (Strings.UI_DOCUMENT_FONT_SIZE, 
+      Defaults.DEFLT_UI_DOCUMENT_FONT_SIZE);
     return Integer.parseInt (s);
     }
 
@@ -507,8 +507,8 @@ public class Config extends Properties
 =========================================================================*/
   public int getHistorySize()
     {
-    String s = getProperty (Constants.HISTORY_SIZE, 
-      Constants.DEFLT_HISTORY_SIZE);
+    String s = getProperty (Strings.HISTORY_SIZE, 
+      Defaults.DEFLT_HISTORY_SIZE);
     return Integer.parseInt (s);
     }
 
@@ -519,9 +519,20 @@ public class Config extends Properties
 =========================================================================*/
   public int getIconSize()
     {
-    String s = getProperty (Constants.UI_ICON_SIZE, 
-      Constants.DEFLT_UI_ICON_SIZE);
+    String s = getProperty (Strings.UI_ICON_SIZE, 
+      Defaults.DEFLT_UI_ICON_SIZE);
     return Integer.parseInt (s);
+    }
+
+/*=========================================================================
+  
+  getMaxRedirects
+
+=========================================================================*/
+  public int getMaxRedirects()
+    {
+    return Integer.parseInt (getProperty 
+        (Strings.REDIRECT_MAX, Defaults.DEFLT_REDIRECT_MAX));
     }
 
 /*=========================================================================
@@ -567,8 +578,8 @@ public class Config extends Properties
 =========================================================================*/
   public String getStreamPlayer()
     {
-    String s = getProperty (Constants.STREAM_PLAYER, 
-      Constants.DEFLT_STREAM_PLAYER);
+    String s = getProperty (Strings.STREAM_PLAYER, 
+      Defaults.DEFLT_STREAM_PLAYER);
     return s; 
     }
 
@@ -599,9 +610,9 @@ public class Config extends Properties
     while (e.hasMoreElements())
       {
       String k = (String)e.nextElement();
-      if (k.startsWith (Constants.CLIENTCERT_TAG))
+      if (k.startsWith (Strings.CLIENTCERT_TAG))
         {
-        String value = k.substring (Constants.CLIENTCERT_TAG.length());
+        String value = k.substring (Strings.CLIENTCERT_TAG.length());
         if (!value.equals ("any"))
           s.add (value);
         }
@@ -619,7 +630,7 @@ public class Config extends Properties
     {
     Logger.in();
     String identsDir = getStateDir() + File.separator 
-      + Constants.IDENTS_DIRNAME; 
+      + Defaults.IDENTS_DIRNAME; 
     Logger.out();
     return identsDir;
     }
@@ -632,8 +643,11 @@ public class Config extends Properties
   public String getDownloadsDir()
     {
     Logger.in();
-    String downloadsDir = getStateDir() + File.separator 
-      + Constants.DOWNLOADS_DIRNAME; 
+    String downloadsDir = getProperty (Strings.DOWNLOADS_DIR, 
+      DEFLT_DOWNLOADS_DIR);
+    if (downloadsDir == null)
+      downloadsDir = getStateDir() + File.separator 
+        + Defaults.DOWNLOADS_DIRNAME; 
     Logger.out();
     return downloadsDir;
     }
@@ -645,7 +659,7 @@ public class Config extends Properties
 =========================================================================*/
 public KeystoreSpec getKeystoreSpecForIdent (String ident)
     {
-    String clientCertSpec = getProperty (Constants.CLIENTCERT_TAG + ident);
+    String clientCertSpec = getProperty (Strings.CLIENTCERT_TAG + ident);
     if (clientCertSpec == null) return null;
 
     String[] tokens = clientCertSpec.trim().split ("\\s+");
@@ -674,7 +688,7 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
     Logger.in();
     String home = System.getProperty ("user.home");
     Logger.out();
-    return home + File.separator + Constants.STATE_DIR_NAME; 
+    return home + File.separator + Defaults.STATE_DIR_NAME; 
     }
 
 /*=========================================================================
@@ -684,7 +698,7 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
 =========================================================================*/
   public String getUserConfigFilename()
     {
-    return getStateDir() + File.separator + Constants.PREFS_FILE;
+    return getStateDir() + File.separator + Defaults.PREFS_FILE;
     }
 
 /*=========================================================================
@@ -730,7 +744,7 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
     Logger.log (getClass().getName(), Logger.INFO, 
       "Loading system-wide configuration");
     // This won't work on Windows, but it won't do any harm.
-    String sysPropsFile = "/etc/caztor/" + Constants.SYS_PREFS_FILE; 
+    String sysPropsFile = "/etc/caztor/" + Defaults.SYS_PREFS_FILE; 
     loadFromFile (sysPropsFile);
 
     Logger.log (getClass().getName(), Logger.DEBUG, 
@@ -761,7 +775,7 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
 =========================================================================*/
   public void removeIdent (String hostname)
     {
-    remove (Constants.IDENT_TAG + hostname);
+    remove (Strings.IDENT_TAG + hostname);
     }
 
 /*=========================================================================
@@ -790,7 +804,7 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
         "Saving properties to " + filename);
     try (OutputStream os = new FileOutputStream (new File (filename)))
       {
-      store (os, Constants.PROPS_COMMENTS);
+      store (os, Strings.PROPS_COMMENTS);
       os.close();
       }
     catch (Exception e)
@@ -809,7 +823,7 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
 =========================================================================*/
   public void setConnectTimeout (int n)
     {
-    setProperty (Constants.CONNECT_TIMEOUT, "" + n);
+    setProperty (Strings.CONNECT_TIMEOUT, "" + n);
     }
 
 /*=========================================================================
@@ -819,7 +833,19 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
 =========================================================================*/
   public void setDocumentBaseFontSize (int px)
     {
-    setProperty (Constants.UI_DOCUMENT_FONT_SIZE, "" + px);
+    setProperty (Strings.UI_DOCUMENT_FONT_SIZE, "" + px);
+    }
+
+/*=========================================================================
+  
+  setDownloadsDir
+
+=========================================================================*/
+  public void setDownloadsDir (String d)
+    {
+    Logger.in();
+    setProperty (Strings.DOWNLOADS_DIR, d);
+    Logger.out();
     }
 
 /*=========================================================================
@@ -830,7 +856,7 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
   public void setEmojiStripBookmarks (boolean f)
     {
     emojiStripBookmarks = f;
-    setProperty (Constants.EMOJI_STRIP_BOOKMARKS, "" + f);
+    setProperty (Strings.EMOJI_STRIP_BOOKMARKS, "" + f);
     }
 
 /*=========================================================================
@@ -840,7 +866,7 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
 =========================================================================*/
   public void setFeedsMaxAge (int n)
     {
-    setProperty (Constants.FEEDS_MAX_AGE, "" + n);
+    setProperty (Strings.FEEDS_MAX_AGE, "" + n);
     }
 
 /*=========================================================================
@@ -852,7 +878,7 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
     {
     if (Logger.isDebug())
       Logger.log (Logger.class, Logger.INFO, "setting home page to " + uri);
-    setProperty (Constants.URL_HOME, uri);
+    setProperty (Strings.URL_HOME, uri);
     }
 
 /*=========================================================================
@@ -862,7 +888,7 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
 =========================================================================*/
   public void setCustomCssFile (String file)
     {
-    setProperty (Constants.UI_DOCUMENT_CUSTOM_CSS, file);
+    setProperty (Strings.UI_DOCUMENT_CUSTOM_CSS, file);
     }
 
 /*=========================================================================
@@ -873,7 +899,7 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
   public void setHistoryEnabled (boolean enabled)
     {
     historyEnabled = enabled;
-    setProperty (Constants.HISTORY_ENABLED, "" + enabled);
+    setProperty (Strings.HISTORY_ENABLED, "" + enabled);
     }
 
 /*=========================================================================
@@ -892,7 +918,7 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
     if (Logger.isDebug())
       Logger.log (Logger.class, Logger.INFO, "setting ident for " + hostname
         + " to " + ident);
-    setProperty (Constants.IDENT_TAG + hostname, ident);
+    setProperty (Strings.IDENT_TAG + hostname, ident);
     Logger.out();
     }
 
@@ -903,7 +929,7 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
 =========================================================================*/
   public void setTheme (String theme)
     {
-    setProperty (Constants.UI_DOCUMENT_THEME, theme);
+    setProperty (Strings.UI_DOCUMENT_THEME, theme);
     }
 
 /*=========================================================================
@@ -914,7 +940,7 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
   public void setGemtextInlineImages (boolean f)
     {
     gemtextInlineImages = f;
-    setProperty (Constants.GEMTEXT_INLINE_IMAGES, "" + f);
+    setProperty (Strings.GEMTEXT_INLINE_IMAGES, "" + f);
     }
 
 /*=========================================================================
@@ -924,7 +950,7 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
 =========================================================================*/
   public void setHistorySize (int n)
     {
-    setProperty (Constants.HISTORY_SIZE, "" + n);
+    setProperty (Strings.HISTORY_SIZE, "" + n);
     }
 
 /*=========================================================================
@@ -934,7 +960,7 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
 =========================================================================*/
   public void setIconSize (int w)
     {
-    setProperty (Constants.UI_ICON_SIZE, "" + w);
+    setProperty (Strings.UI_ICON_SIZE, "" + w);
     }
 
 
@@ -945,7 +971,7 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
 =========================================================================*/
   public void setFeedsUpdateOnStartup (boolean f)
     {
-    setProperty (Constants.FEEDS_UPDATE_ON_STARTUP, "" + f);
+    setProperty (Strings.FEEDS_UPDATE_ON_STARTUP, "" + f);
     }
 
 /*=========================================================================
@@ -955,7 +981,7 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
 =========================================================================*/
   public void setIconsMono (boolean f)
     {
-    setProperty (Constants.UI_ICONS_MONO, "" + f);
+    setProperty (Strings.UI_ICONS_MONO, "" + f);
     }
 
 /*=========================================================================
@@ -965,7 +991,7 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
 =========================================================================*/
   public void setInlineImageWidth (int n)
     {
-    setProperty (Constants.INLINE_IMAGE_WIDTH, "" + n);
+    setProperty (Strings.INLINE_IMAGE_WIDTH, "" + n);
     }
 
 /*=========================================================================
@@ -976,7 +1002,7 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
   public void setUrlbarSearchEnabled (boolean f)
     {
     urlbarSearchEnabled = f;
-    setProperty (Constants.URLBAR_SEARCH_ENABLED, "" + f);
+    setProperty (Strings.URLBAR_SEARCH_ENABLED, "" + f);
     }
 
 /*=========================================================================
@@ -986,7 +1012,7 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
 =========================================================================*/
   public void setStreamPlayer (String s)
     {
-    setProperty (Constants.STREAM_PLAYER, s);
+    setProperty (Strings.STREAM_PLAYER, s);
     }
 
 /*=========================================================================
@@ -996,7 +1022,7 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
 =========================================================================*/
   public void setUrlbarSearchUrl (String url)
     {
-    setProperty (Constants.URLBAR_SEARCH_URL, url);
+    setProperty (Strings.URLBAR_SEARCH_URL, url);
     }
 
 /*=========================================================================
@@ -1006,7 +1032,7 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
 =========================================================================*/
   public void setWindowHeight (int h)
     {
-    setProperty (Constants.WINDOW_H, "" + h);
+    setProperty (Strings.WINDOW_H, "" + h);
     }
 
 /*=========================================================================
@@ -1016,7 +1042,7 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
 =========================================================================*/
   public void setWindowWidth (int w)
     {
-    setProperty (Constants.WINDOW_W, "" + w);
+    setProperty (Strings.WINDOW_W, "" + w);
     }
 
 

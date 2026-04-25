@@ -14,7 +14,7 @@ import java.awt.event.*;
 import java.net.URL;
 import java.net.URLEncoder;
 import me.kevinboone.caztor.base.*;
-import me.kevinboone.caztor.Constants;
+import me.kevinboone.caztor.Version;
 
 /**
   A text entry dialog specifically for entering text that will be
@@ -31,7 +31,7 @@ private int maxInputBytes;
 
 public TextEntryDialog (JFrame parent, int maxInputBytes)
   {
-  super (parent, Constants.APP_NAME, Dialog.ModalityType.DOCUMENT_MODAL);
+  super (parent, Version.APP_NAME, Dialog.ModalityType.DOCUMENT_MODAL);
 
   input = null;	
   this.maxInputBytes = maxInputBytes;

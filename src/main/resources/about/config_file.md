@@ -77,6 +77,11 @@ For more information, see the page on [client certificates](client_certs.md).
 The longest time in seconds that Caztor will wait to establish a
 connection to a server. Default is 10 seconds.
 
+`downloads.directory`  
+The directory to which Caztor will download files unless you tell it
+differently. The default location is `$HOME/.caztor/downloads`. 
+Caztor won't create the directory; it must exist already.
+
 `emoji.strip.bookmarks`  
 If set to 'yes', Caztor strips Unicode emojis from new bookmarks before
 storing them. It also prevents emojis being displayed in the main user
@@ -146,6 +151,10 @@ based on this width and the aspect ratio. Default: "600".
 Controls debug logging. Takes values '0' (fatal errors) to '3' (copious
 debugging).  Default is "1". Bear in mind that you'll only see any of this
 logging if you run the program from a prompt. 
+
+`redirects.max`  
+Maximum number of redirections allowed before Caztor will give up following
+redirections. Default: 6.
 
 `stream.player`  
 Command or path of the application that will receive the data stream, when you

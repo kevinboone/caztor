@@ -14,7 +14,6 @@ import java.awt.*;
 import java.util.*;
 import java.awt.event.*;
 import java.net.URL;
-import me.kevinboone.caztor.Constants;
 import me.kevinboone.caztor.base.*;
 
 /** Implements the Select action dialog, which is raised when the
@@ -199,7 +198,7 @@ public boolean getAlways()
 =========================================================================*/
 private void handleDocs()
   {
-  mainWindow.newWindow (Constants.DOC_SELECT_ACTION_DIALOG, 
+  mainWindow.newWindow (Strings.DOC_SELECT_ACTION_DIALOG, 
     "Select action dialog"); // Not seen
   }
 

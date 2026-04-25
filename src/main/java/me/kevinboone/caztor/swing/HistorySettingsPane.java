@@ -16,7 +16,7 @@ import java.util.*;
 import java.awt.event.*;
 import javax.swing.text.*;
 import me.kevinboone.caztor.base.*;
-import me.kevinboone.caztor.Constants;
+import me.kevinboone.caztor.Version;
 
 /** Implements the History tab of the Settings dialog. 
 */
@@ -150,7 +150,7 @@ public class HistorySettingsPane extends SettingsPane
         {
        String message = dialogsBundle.getString 
           ("history_settings_pane_confirm_delete_history");
-        if (JOptionPane.showConfirmDialog (this, message, Constants.APP_NAME, 
+        if (JOptionPane.showConfirmDialog (this, message, Version.APP_NAME, 
             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) 
               == JOptionPane.YES_OPTION)
           {

@@ -21,7 +21,8 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
-import me.kevinboone.caztor.Constants;
+import me.kevinboone.caztor.Version;
+import me.kevinboone.caztor.Defaults;
 import me.kevinboone.caztor.base.*;
 import me.kevinboone.caztor.protocol.*;
 import me.kevinboone.caztor.converters.*;
@@ -34,8 +35,8 @@ import net.fellbaum.jemoji.*;
 */
 public class MainWindow extends JFrame implements ConfigChangeListener
   {
-  private final static String DIALOG_CAPTION = Constants.APP_NAME;
-  private final static String WINDOW_CAPTION = Constants.APP_NAME;
+  private final static String DIALOG_CAPTION = Version.APP_NAME;
+  private final static String WINDOW_CAPTION = Version.APP_NAME;
   private final static ResourceBundle messagesBundle = 
     ResourceBundle.getBundle ("me.kevinboone.caztor.bundles.Messages");
   private final static ResourceBundle generalBundle = 
@@ -312,7 +313,7 @@ public class MainWindow extends JFrame implements ConfigChangeListener
       backUrl = linkStack.peek();
       if (Logger.isDebug())
         Logger.log (getClass().getName(), Logger.DEBUG, "Back URL " + backUrl);
-      loadFromUri (backUrl, null, true);
+      loadFromUri (backUrl, null, true, 0);
       }
     else
       {
@@ -442,7 +443,7 @@ public class MainWindow extends JFrame implements ConfigChangeListener
       if (file.exists())
         {
         String message = messagesBundle.getString ("query_overwrite_file");
-        if (JOptionPane.showConfirmDialog (null, message, Constants.APP_NAME,
+        if (JOptionPane.showConfirmDialog (null, message, Version.APP_NAME,
           JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)
             != JOptionPane.YES_OPTION)
           return;
@@ -942,7 +943,7 @@ private void downloadAndInvokeDesktop (URL url)
       EditFileDialog d = new EditFileDialog (this, 
         captionsBundle.getString ("edit_config_file"), 
           Config.getConfig().getUserConfigFilename(), 
-            Constants.DOC_EDIT_SETTINGS);
+            Strings.DOC_EDIT_SETTINGS);
       d.setVisible (true);
       if (d.didSave())
         Config.getConfig().load();
@@ -1061,7 +1062,7 @@ void ensureFeedManagerDialogVisible()
     //System.out.println ("next=" + next);
     if (next != null)
       {
-      loadFromUri (next, null, true);
+      loadFromUri (next, null, true, 0);
       }
     Logger.out();
     }
@@ -1193,7 +1194,7 @@ void ensureFeedManagerDialogVisible()
       if (Logger.isDebug())
         Logger.log (getClass().getName(), Logger.DEBUG, 
           "Retrying URL " + retryUrl);
-      loadFromUri (retryUrl, str, false); 
+      loadFromUri (retryUrl, str, false, 0); 
       }
     Logger.out();
     }
@@ -1209,12 +1210,16 @@ void ensureFeedManagerDialogVisible()
   the loading happens on background threads.
 
 =========================================================================*/
-  private void handleRedirect (URL url)
+  private void handleRedirect (URL url, int redirects)
+      throws TooManyRedirectsException
     {
     Logger.in();
     if (Logger.isDebug())
       Logger.log (getClass().getName(), Logger.DEBUG, "Redirect to " + url);
-    loadURI (url);
+    if (redirects < config.getMaxRedirects())
+      loadFromUri (url, null, false, 0);
+    else
+      throw new TooManyRedirectsException (redirects);
     Logger.out();
     }
 
@@ -1467,7 +1472,7 @@ void ensureFeedManagerDialogVisible()
       do that if we're loading in response to a back or fwd operation.
   */
   private void loadFromUri (URL url, String qparam, 
-            boolean preserveFwdLinks)
+            boolean preserveFwdLinks, int redirects)
     {
     Logger.in();
     if (Logger.isDebug())
@@ -1573,7 +1578,14 @@ void ensureFeedManagerDialogVisible()
 	    else if (e instanceof RedirectedException)
 	      {
 	      loadWorker = null;
-	      handleRedirect (((RedirectedException)e).getURL());
+              try
+                {
+	        handleRedirect (((RedirectedException)e).getURL(), redirects + 1);
+                }
+              catch (TooManyRedirectsException e2)
+                {
+	        reportGenError (messagesBundle.getString("too_many_redirects")); 
+                }
 	      }
 	    else if (e instanceof ErrorResponseException)
 	      {
@@ -1743,17 +1755,17 @@ void ensureFeedManagerDialogVisible()
       { 
       if (uri.getProtocol().equals ("gemini"))
 	{
-	loadFromUri (uri, null, false);
+	loadFromUri (uri, null, false, 0);
         // Changed: don't set baseUri here, but when the response completes
 	//baseUri = uri;
 	}
       else if (uri.getProtocol().equals ("mark"))
 	{
-	loadFromUri (uri, null, false);
+	loadFromUri (uri, null, false, 0);
 	}
       else if (uri.getProtocol().equals ("spartan"))
 	{
-	loadFromUri (uri, null, false);
+	loadFromUri (uri, null, false, 0);
 	//baseUri = uri;
 	}
       else if (uri.getProtocol().equals ("gopher"))
@@ -1768,30 +1780,30 @@ void ensureFeedManagerDialogVisible()
 	    {
             try
               {
-	      loadFromUri (uri, str, false); 
+	      loadFromUri (uri, str, false, 0); 
               } catch (Exception e){}
 	  //  baseUri = uri;
 	    }
           }
         else
           {
-	  loadFromUri (uri, null, false);
+	  loadFromUri (uri, null, false, 0);
 	  //baseUri = uri;
           }
 	}
       else if (uri.getProtocol().equals ("nex"))
 	{
-	loadFromUri (uri, null, false);
+	loadFromUri (uri, null, false, 0);
 	//baseUri = uri;
 	}
       else if (uri.getProtocol().equals ("about"))
 	{
-	loadFromUri (uri, null, false);
+	loadFromUri (uri, null, false, 0);
 	//baseUri = uri;
 	}
       else if (uri.getProtocol().equals ("file"))
 	{
-	loadFromUri (uri, null, false);
+	loadFromUri (uri, null, false, 0);
 	//baseUri = uri;
 	}
       else
@@ -1877,16 +1889,16 @@ void ensureFeedManagerDialogVisible()
     {
     String aboutMessage = messagesBundle.getString ("about"); 
     String versionText = generalBundle.getString ("version_uc"); 
-    String s = Constants.APP_NAME + " " + versionText 
-      + " " + Constants.VERSION + "\n\n"; 
+    String s = Version.APP_NAME + " " + versionText 
+      + " " + Version.VERSION + "\n\n"; 
     s += aboutMessage + "\n";
 
     JTextArea textArea = new JTextArea (s);
     textArea.setWrapStyleWord (true);
     textArea.setLineWrap (true);
     textArea.setEditable (false);
-    textArea.setRows (Constants.DIALOG_ROWS);
-    textArea.setColumns (Constants.DIALOG_COLS * 2);
+    textArea.setRows (Defaults.DIALOG_ROWS);
+    textArea.setColumns (Defaults.DIALOG_COLS * 2);
     textArea.setBorder(new EmptyBorder (20, 20, 20, 20));
 
     JScrollPane scrollPane = new JScrollPane (textArea);
@@ -1914,7 +1926,7 @@ void ensureFeedManagerDialogVisible()
 =========================================================================*/
   private void menuCommandDocs()
     {
-    newWindow (Constants.DOC_INDEX, 
+    newWindow (Strings.DOC_INDEX, 
       captionsBundle.getString ("documentation"));
     }
 
@@ -1989,7 +2001,7 @@ void ensureFeedManagerDialogVisible()
 =========================================================================*/
   private void menuCommandReleaseNotes()
     {
-    newWindow (Constants.DOC_RELEASE_NOTES, 
+    newWindow (Strings.DOC_RELEASE_NOTES, 
       captionsBundle.getString ("release_notes"));
     }
 
@@ -2318,7 +2330,7 @@ void ensureFeedManagerDialogVisible()
     applyInitialStyles ();
     if (baseUri != null)
       {
-      loadFromUri (baseUri, null, true);
+      loadFromUri (baseUri, null, true, 0);
       }
     Logger.out();
     }

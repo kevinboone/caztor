@@ -12,7 +12,6 @@ import java.io.*;
 import java.awt.*;
 import java.util.*;
 import java.net.URL;
-import me.kevinboone.caztor.Constants;
 import me.kevinboone.caztor.base.*;
 
 /** A few helper methods for managing user identity names, and
