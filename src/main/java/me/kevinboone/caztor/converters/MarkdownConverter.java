@@ -49,7 +49,7 @@ class LinkAttributeProvider implements AttributeProvider
         {
         attributes.put("src", oldSrc);
         }
-      attributes.put("alt", "foo");
+      //attributes.put("alt", "foo");
       }
     else if (node instanceof Link) 
       {
@@ -86,7 +86,7 @@ public class MarkdownConverter implements Converter
     this.baseUrl = baseUrl;
     // Create the renderer with our AttributeProvider in place.
     renderer = HtmlRenderer.builder()
-        .attributeProviderFactory(new AttributeProviderFactory() 
+        .attributeProviderFactory (new AttributeProviderFactory() 
            {
            public AttributeProvider create (AttributeProviderContext context) 
              {

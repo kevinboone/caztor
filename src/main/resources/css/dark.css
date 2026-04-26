@@ -55,14 +55,16 @@ h3
 p 
   {
   color: #7ba2c4; 
+  margin-bottom: 8px;
+  margin-top: 0px;
   }
 
 pre 
   {
   background: #030e18; 
   font: %%base_font_size%%px monospace; 
-  margin-top: 16px;
-  padding: 8px;
+  padding-top: 0px;
+  padding-bottom: 8px;
   }
 
 ul 

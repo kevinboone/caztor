@@ -2,3 +2,4 @@ target/
 build.sh
 spelling.*
 *.jks
+test.gmi

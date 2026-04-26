@@ -431,4 +431,8 @@ Caztor version 1.0.2 -- April 2026
 - Added "dark\_mono" theme
 - Disabled certificate verification for Demarkus, in line with other 
   protocols
-
+- Many changes to inter-element spacing, and corresponding changes to the
+  theme CSS file. These changes are to give effect to Gemtext authors who
+  do the right thing, and don't insert additional spacing between titles
+  and paragraphs.
+ 

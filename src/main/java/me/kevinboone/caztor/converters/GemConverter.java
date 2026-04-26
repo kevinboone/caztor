@@ -65,20 +65,18 @@ public class GemConverter extends TextLikeConverter implements Converter
     if (gem.startsWith ("* "))
       return "<ul><li>&nbsp;" + escapeHtml(gem.substring(2)) + "</li></ul>\n";
     if (gem.startsWith ("=>"))
-      return parseLink (gem.substring(2).trim());
+      return "<p>" + parseLink (gem.substring(2).trim()) + "</p>\n";
       
-    //return "<p>" + escapeHtml(gem) + "</p>\n";
-    return formatLineAsHtml (escapeHtml(gem)) + "<br/>\n";
+    return "<p>" + escapeHtml(gem) + "</p>\n";
+    //return formatLineAsHtml (escapeHtml(gem)) + "<br/>\n";
     }
 
   /** Convert the Gemtext file to HTML. */ 
   @Override
   public String toHtml (String gem)
     {
-    //System.out.println ("gem=" + gem);
     StringBuffer sb = new StringBuffer();
     String lines[] = gem.split ("\n");
-    //sb.append ("<html><meta charset=\"UTF-8\"><head><body>\n");
     sb.append ("<html><head><body>\n");
 
     for (int i = 0; i < lines.length; i++)
@@ -89,6 +87,7 @@ public class GemConverter extends TextLikeConverter implements Converter
       }
 
     sb.append ("</body></html>\n");
+    //System.out.println (sb);
     return new String (sb);
     }
   }

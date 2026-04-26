@@ -64,13 +64,13 @@ public class TextLikeConverter
     Config config = Config.getConfig();
     if (isImageUri (uri) && config.getGemtextInlineImages())
       {
-      return "<p><img width=\"" + config.getInlineImageWidth() + "\" src=\"" 
+      return "<img width=\"" + config.getInlineImageWidth() + "\" src=\"" 
         + rewriteLink (uri) + "\">" + "<br/>" + "<a href=\"" 
            + rewriteLink (uri) + "\">" + getLinkIcon (uri, title) + " " 
-             + escapeHtml (title) + "</a><br/></p>"; 
+             + escapeHtml (title) + "</a>"; 
       }
     return "<a href=\"" + rewriteLink (uri) + "\">" + 
-      getLinkIcon (uri, title) + " " + escapeHtml (title) + "</a><br/>"; 
+      getLinkIcon (uri, title) + " " + escapeHtml (title) + "</a>"; 
     } 
 
   /** Parse and convert a Gemtext link line. */

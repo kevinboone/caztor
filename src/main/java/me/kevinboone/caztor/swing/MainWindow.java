@@ -388,6 +388,7 @@ public class MainWindow extends JFrame implements ConfigChangeListener
   */
   public boolean canIdentity ()
     {
+    if (baseUri == null) return false;
     return ("gemini".equals (baseUri.getProtocol()));
     }
 
