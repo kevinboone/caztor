@@ -64,6 +64,10 @@ public class SpartanConnection extends URLConnection
 
     String host = getURL().getHost();
     String path = getURL().getPath();
+
+    if (path.length() == 0) // Spartan fails completely if there isn't a path
+      path = "/";
+
     int port = getURL().getPort();
     if (port == -1) port = 300;
 
@@ -73,7 +77,7 @@ public class SpartanConnection extends URLConnection
     OutputStream os = s.getOutputStream();
     PrintStream pos = new PrintStream (os);
 
-    String request = getURL().getHost() + " " + getURL().getPath() + " 0\r\n";
+    String request = getURL().getHost() + " " + path + " 0\r\n";
     pos.print (request); 
     pos.flush();
 

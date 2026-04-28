@@ -440,4 +440,6 @@ Caztor version 1.0.2 -- April 2026
 - Completely re-worked the Gemtext parser, to group elements like
   lists into a single HTML block. This allows for better control of
   layout and spacing
+- With Spartan, set the request path to "/" if the user's URL has no
+  path at all
 
