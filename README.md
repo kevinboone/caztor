@@ -435,4 +435,9 @@ Caztor version 1.0.2 -- April 2026
   theme CSS file. These changes are to give effect to Gemtext authors who
   do the right thing, and don't insert additional spacing between titles
   and paragraphs.
- 
+- Added "Gemtext lines as paragraphs" setting, to insert extra vertical
+  space into documents that don't have blank lines for spacing
+- Completely re-worked the Gemtext parser, to group elements like
+  lists into a single HTML block. This allows for better control of
+  layout and spacing
+

@@ -34,6 +34,20 @@ public interface Defaults
   public final static String DEFLT_WINDOW_H = "900";
   public final static String DEFLT_WINDOW_W = "1200";
   public final static String DEFLT_STREAM_PLAYER = "vlc -";
+  public final static boolean DEFLT_GEMTEXT_INLINE_IMAGES = true;
+  public final static String DEFLT_UI_DOCUMENT_CUSTOM_CSS = null;
+  public final static boolean DEFLT_UI_ICONS_MONO = false;
+  public final static String DEFLT_DOWNLOADS_DIR = null;
+  public final static String DEFLT_FEEDS_FILE = null;
+  public final static String DEFLT_AGGREGATED_FEEDS_FILE = null;
+  public final static String DEFLT_HISTORY_FILE = null;
+  public final static String DEFLT_BOOKMARK_FILE = null;
+  public final static int DEFLT_BOOKMARK_MAX_MENU = 10;
+  public final static boolean DEFLT_HISTORY_ENABLED = false;
+  public final static boolean DEFLT_URLBAR_SEARCH_ENABLED = true;
+  public final static boolean DEFLT_FEEDS_UPDATE_ON_STARTUP = false;
+  public final static boolean  DEFLT_GEMTEXT_LINEASPARA = false;
+
 
   // File and directory names
 

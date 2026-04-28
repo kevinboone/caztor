@@ -37,6 +37,7 @@ public interface Strings
   public final static String FEEDS_UPDATE_ON_STARTUP = "feeds.update_on_startup";
   public final static String AGGREGATED_FEEDS_FILE = "feeds.aggregated.file";
   public final static String GEMTEXT_INLINE_IMAGES = "gemtext.inline.images";
+  public final static String GEMTEXT_LINEASPARA = "gemtext.line_as_para";
   public final static String LOG_LEVEL = "log.level";
   public final static String HISTORY_FILE = "history.file";
   public final static String HISTORY_SIZE = "history.size";

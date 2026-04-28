@@ -111,6 +111,12 @@ Controls whether to display images in-line in Gemtext documents.  Note that
 images are always displayed in-line in Markdown documents, and never in
 gophermaps. The default is  'yes', to display in-line images. 
 
+`gemtext.line_as_para`  
+Treat each line in a Gemtext document as a paragraph, inserting a half-line
+space after each one. The default is 'no', because almost all 
+Gemini authors and applications insert additional spacing in the form
+of blank lines. 
+
 `handler`  
 Specifies how to handle content that Caztor does not natively support.
 The `handler.` prefix is followed by a MIME type, such as `handler.audio/mpeg`.

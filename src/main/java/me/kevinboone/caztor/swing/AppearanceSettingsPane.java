@@ -24,8 +24,10 @@ public class AppearanceSettingsPane extends SettingsPane
   private MainWindow mainWindow;
   private JTextField documentBaseFontSize;
   private JCheckBox emojiStripBookmarks; 
+  private JCheckBox gemtextLineAsPara; 
   private int oldDocumentBaseFontSize;
   private boolean oldEmojiStripBookmarks;
+  private boolean oldGemtextLineAsPara;
 
 /*=========================================================================
   
@@ -39,6 +41,7 @@ public class AppearanceSettingsPane extends SettingsPane
     this.mainWindow = mainWindow;
     oldDocumentBaseFontSize = config.getDocumentBaseFontSize();
     oldEmojiStripBookmarks = config.getEmojiStripBookmarks();
+    oldGemtextLineAsPara = config.getGemtextLineAsPara();
 
     GridBagLayout gl = new GridBagLayout ();
     setLayout (gl);
@@ -83,15 +86,24 @@ public class AppearanceSettingsPane extends SettingsPane
     emojiStripBookmarksLabel.setLabelFor (emojiStripBookmarks); 
     add (emojiStripBookmarks, gbc11);
 
-/*
     // Row 2, col 0
     GridBagConstraints gbc20 = new GridBagConstraints();
     gbc20.insets = new Insets (5, 5, 5, 5);
     gbc20.gridy = 2;
     gbc20.gridx = 0;
-    JButton clearAppearance = createButton ("appearance_settings_pane_clear_appearance"); 
-    add (clearAppearance, gbc20);
-*/
+    gbc20.anchor = gbc20.EAST;
+    JLabel gemtextLineAsParaLabel = createLabel 
+      ("appearance_settings_pane_gemtext_lineaspara");
+    add (gemtextLineAsParaLabel, gbc20);
+
+    // Row 2, col 1
+    GridBagConstraints gbc21 = new GridBagConstraints();
+    gbc21.insets = new Insets (5, 5, 5, 5);
+    gbc21.gridy = 2;
+    gbc21.gridx = 1;
+    gemtextLineAsPara = new JCheckBox();
+    gemtextLineAsParaLabel.setLabelFor (gemtextLineAsPara); 
+    add (gemtextLineAsPara, gbc21);
 
     // Set digits only
     documentBaseFontSize.setDocument (new PlainDocument() 
@@ -109,6 +121,7 @@ public class AppearanceSettingsPane extends SettingsPane
 
     documentBaseFontSize.setText ("" + oldDocumentBaseFontSize);
     emojiStripBookmarks.setSelected (oldEmojiStripBookmarks);
+    gemtextLineAsPara.setSelected (oldGemtextLineAsPara);
     }
 
 /*=========================================================================
@@ -145,6 +158,13 @@ public class AppearanceSettingsPane extends SettingsPane
       {
       config.setEmojiStripBookmarks (newEmojiStripBookmarks);
       ccMode = ConfigChangeListener.CCMODE_REFRESH; 
+      }
+
+    boolean newGemtextLineAsPara = gemtextLineAsPara.isSelected();
+    if (newGemtextLineAsPara != oldGemtextLineAsPara)
+      {
+      config.setGemtextLineAsPara (newGemtextLineAsPara);
+      ccMode = ConfigChangeListener.CCMODE_RELOAD; 
       }
 
     }

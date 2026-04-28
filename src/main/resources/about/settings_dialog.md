@@ -25,6 +25,11 @@ disturbing the user interface, on systems where it isn't possible to
 Please note that changing this setting does not remove emojis that have already
 been stored, although it removes them from the user interface. 
 
+If you check the box _Gemtext line as paragraph_, Caztor will insert a
+small extra space after each Gemtext line, treating it as a paragraph.
+This usually isn't necessary, because most authors insert additional
+blank lines to create space.
+
 ## Theme tab 
 
 The theme tab allow you to select one of the built-in themes, or provide

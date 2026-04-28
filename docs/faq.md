@@ -193,6 +193,18 @@ The relevant setting is in the _Feeds_ tab of the _Settings_ dialog box.  This
 feature is disabled by default, because it's best to ensure that feed
 aggregation is working properly, before letting it happen automatically. 
 
+_Why is there no spacing between paragraphs in a Gemtext document?_
+
+The Gemtext specification is unclear about how browsers should interpret
+individual lines of text, beyond that they should be "self-contained". 
+Browsers aren't obliged to treat them as paragraphs and, in practice,
+most authors insert additional blank lines to separate lines into
+paragraph. If authors _don't_ do this, the effect is of a single,
+monolithic block of text, with no spacing between paragraphs.
+
+You can improve this situation by enabling _Gemtext lines as paragraphs_
+in the _Settings_ dialog, _Appearance_ tab.
+
 ## Configuration
 
 _How do I change the document fonts?_

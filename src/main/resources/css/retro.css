@@ -19,7 +19,8 @@ blockquote
   {
   background: #101010; 
   font-weight: bold; 
-  padding: 8px 
+  padding: 16px; 
+  margin: 0;
   }
 
 code 
@@ -62,12 +63,13 @@ p
 pre 
   {
   font: %%base_font_size%%px monospace; 
-  padding-top: 0px;
-  padding-bottom: 8px;
+  padding: 16px; 
+  margin: 0;
   }
 
 ul 
   {
-  margin-top: 8px;
+  margin: 0;
+  padding: 16px;
   }
 

@@ -1,0 +1,25 @@
+# This is the main heading
+This is the first line, right up against the heading with no extra spacing.
+This is the second line, right up against the first with no extra spacing.
+
+This third line is separated from the second by one blank line.
+```
+This preformat section starts directly after the third line.
+It has three lines.
+This is the third.
+```
+This line follows the preformat section with no extra spacing. 
+> This block quote section follows the previous line with no extra spacing
+>
+> This block quite line is preceded by an empty block quote line.
+
+This line has one blank line above it and one below.
+
+> This block quote section follows the previous line and one empty line. 
+
+This line follows the block quote with one blank line.
+* This is the first item in a list, no blank line above
+* This is the second item in a list
+* This is the third item
+This line follows the list, with no blank line.
+

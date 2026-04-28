@@ -24,6 +24,10 @@ public class Dialogs extends ListResourceBundle
     {"appearance_settings_pane_base_font_size_mnemonic", KeyEvent.VK_F},
     {"appearance_settings_pane_name", "Appearance"},
     {"appearance_settings_pane_mnemonic", KeyEvent.VK_A},
+    {"appearance_settings_pane_gemtext_lineaspara", 
+      "Gemtext line is paragraph"},
+    {"appearance_settings_pane_gemtext_lineaspara_mnemonic", 
+      KeyEvent.VK_L},
 
     {"attachidentitydialog_keystore_empty", "Keystore filename is blank"},
     {"attachidentitydialog_keystore_file", "Keystore file"},

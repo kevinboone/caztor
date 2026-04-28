@@ -29,19 +29,6 @@ public class Config extends Properties
   private boolean historyEnabled = false;
   private boolean emojiStripBookmarks = false;
 
-  public final static boolean DEFLT_GEMTEXT_INLINE_IMAGES = true;
-  public final static String DEFLT_UI_DOCUMENT_CUSTOM_CSS = null;
-  public final static boolean DEFLT_UI_ICONS_MONO = false;
-  public final static String DEFLT_DOWNLOADS_DIR = null;
-  public final static String DEFLT_FEEDS_FILE = null;
-  public final static String DEFLT_AGGREGATED_FEEDS_FILE = null;
-  public final static String DEFLT_HISTORY_FILE = null;
-  public final static String DEFLT_BOOKMARK_FILE = null;
-  public final static int DEFLT_BOOKMARK_MAX_MENU = 10;
-  public final static boolean DEFLT_HISTORY_ENABLED = false;
-  public final static boolean DEFLT_URLBAR_SEARCH_ENABLED = true;
-  public final static boolean DEFLT_FEEDS_UPDATE_ON_STARTUP = false;
-
   private Vector<ConfigChangeListener> listeners = new Vector<ConfigChangeListener>();
 
   private static Config instance = null;
@@ -101,20 +88,20 @@ public class Config extends Properties
   private void deriveProperties()
     {
     bookmarkMaxMenu = Integer.parseInt (getProperty 
-      (Strings.BOOKMARK_MAX_MENU, ""+DEFLT_BOOKMARK_MAX_MENU));
+      (Strings.BOOKMARK_MAX_MENU, "" + Defaults.DEFLT_BOOKMARK_MAX_MENU));
 
     logLevel = Integer.parseInt (getProperty (Strings.LOG_LEVEL, 
       "" + Defaults.DEFLT_LOG_LEVEL));
     Logger.setLevel (logLevel);
 
     gemtextInlineImages = getBooleanProperty 
-      (Strings.GEMTEXT_INLINE_IMAGES, DEFLT_GEMTEXT_INLINE_IMAGES);
+      (Strings.GEMTEXT_INLINE_IMAGES, Defaults.DEFLT_GEMTEXT_INLINE_IMAGES);
    
     urlbarSearchEnabled = getBooleanProperty
-      (Strings.URLBAR_SEARCH_ENABLED, DEFLT_URLBAR_SEARCH_ENABLED); 
+      (Strings.URLBAR_SEARCH_ENABLED, Defaults.DEFLT_URLBAR_SEARCH_ENABLED); 
 
     historyEnabled = getBooleanProperty 
-      (Strings.HISTORY_ENABLED, DEFLT_HISTORY_ENABLED);
+      (Strings.HISTORY_ENABLED, Defaults.DEFLT_HISTORY_ENABLED);
 
     emojiStripBookmarks = getBooleanProperty 
       (Strings.EMOJI_STRIP_BOOKMARKS, Defaults.DEFLT_EMOJI_STRIP_BOOKMARKS);
@@ -249,7 +236,7 @@ public class Config extends Properties
   public String getAggregatedFeedsFile()
     {
     String feedsFile = getProperty (Strings.AGGREGATED_FEEDS_FILE, 
-      DEFLT_AGGREGATED_FEEDS_FILE);
+      Defaults.DEFLT_AGGREGATED_FEEDS_FILE);
     if (feedsFile == null)
       feedsFile = getStateDir() + File.separator 
         + Defaults.AGGREGATED_FEEDS_FILENAME;
@@ -280,7 +267,7 @@ public class Config extends Properties
   public String getHistoryFile()
     {
     String historyFile = getProperty (Strings.HISTORY_FILE, 
-      DEFLT_HISTORY_FILE);
+      Defaults.DEFLT_HISTORY_FILE);
     if (historyFile == null)
       historyFile = getStateDir() + File.separator + Defaults.HISTORY_FILENAME;
     return historyFile;
@@ -294,7 +281,7 @@ public class Config extends Properties
   public String getBookmarksFile()
     {
     String bookmarkFile = getProperty (Strings.BOOKMARK_FILE, 
-      DEFLT_BOOKMARK_FILE);
+      Defaults.DEFLT_BOOKMARK_FILE);
     if (bookmarkFile == null)
       bookmarkFile = getStateDir() + File.separator 
         + Defaults.BOOKMARK_FILENAME;
@@ -320,7 +307,7 @@ public class Config extends Properties
   public String getFeedsFile()
     {
     String feedsFile = getProperty (Strings.FEEDS_FILE, 
-      DEFLT_FEEDS_FILE);
+      Defaults.DEFLT_FEEDS_FILE);
     if (feedsFile == null)
       feedsFile = getStateDir() + File.separator 
         + Defaults.FEEDS_FILENAME;
@@ -359,6 +346,17 @@ public class Config extends Properties
 
 /*=========================================================================
   
+  getGemtextLineAsPara
+
+=========================================================================*/
+  public boolean getGemtextLineAsPara()
+    {
+    return getBooleanProperty (Strings.GEMTEXT_LINEASPARA, 
+      Defaults.DEFLT_GEMTEXT_LINEASPARA);
+    }
+
+/*=========================================================================
+  
   getInlineImageWidth 
 
 =========================================================================*/
@@ -387,7 +385,7 @@ public class Config extends Properties
   public boolean getFeedsUpdateOnStartup()
     {
     return getBooleanProperty (Strings.FEEDS_UPDATE_ON_STARTUP, 
-      DEFLT_FEEDS_UPDATE_ON_STARTUP);
+      Defaults.DEFLT_FEEDS_UPDATE_ON_STARTUP);
     }
 
 /*=========================================================================
@@ -397,7 +395,8 @@ public class Config extends Properties
 =========================================================================*/
   public boolean getIconsMono()
     {
-    return getBooleanProperty (Strings.UI_ICONS_MONO, DEFLT_UI_ICONS_MONO);
+    return getBooleanProperty (Strings.UI_ICONS_MONO, 
+        Defaults.DEFLT_UI_ICONS_MONO);
     }
 
 /*=========================================================================
@@ -463,7 +462,7 @@ public class Config extends Properties
   public String getCustomCSSFile()
     {
     return getProperty (Strings.UI_DOCUMENT_CUSTOM_CSS, 
-      DEFLT_UI_DOCUMENT_CUSTOM_CSS);
+      Defaults.DEFLT_UI_DOCUMENT_CUSTOM_CSS);
     }
 
 /*=========================================================================
@@ -644,7 +643,7 @@ public class Config extends Properties
     {
     Logger.in();
     String downloadsDir = getProperty (Strings.DOWNLOADS_DIR, 
-      DEFLT_DOWNLOADS_DIR);
+      Defaults.DEFLT_DOWNLOADS_DIR);
     if (downloadsDir == null)
       downloadsDir = getStateDir() + File.separator 
         + Defaults.DOWNLOADS_DIRNAME; 
@@ -941,6 +940,16 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
     {
     gemtextInlineImages = f;
     setProperty (Strings.GEMTEXT_INLINE_IMAGES, "" + f);
+    }
+
+/*=========================================================================
+  
+  setGemtextLineAsPara
+
+=========================================================================*/
+  public void setGemtextLineAsPara (boolean f)
+    {
+    setProperty (Strings.GEMTEXT_LINEASPARA, "" + f);
     }
 
 /*=========================================================================

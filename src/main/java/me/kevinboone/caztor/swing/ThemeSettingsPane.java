@@ -61,7 +61,8 @@ public class ThemeSettingsPane extends SettingsPane
     JButton fileButton = new JButton(fileIcon);
 
     filenameField = new JTextField(20);
-    
+    filenameField.setText (config.getCustomCSSFile());
+ 
     JPanel myself = this;
     fileButton.addActionListener (new ActionListener()
       {
