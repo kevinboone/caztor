@@ -34,9 +34,6 @@ public class Menus extends ListResourceBundle
     {"context_open_in_new_window", "Open in new window"},
     {"context_stream", "Stream to player"},
 
-    {"file", "File"},
-    {"file_mnemonic", KeyEvent.VK_F},
-
     {"edit", "Edit"},
     {"edit_mnemonic", KeyEvent.VK_E},
 
@@ -74,11 +71,16 @@ public class Menus extends ListResourceBundle
     {"feeds_view_aggregated", "View aggregated posts"},
     {"feeds_view_aggregated_mnemonic", KeyEvent.VK_V},
 
+    {"file", "File"},
+    {"file_mnemonic", KeyEvent.VK_F},
 
     {"file_close", "Close"},
     {"file_close_mnemonic", KeyEvent.VK_C},
     {"file_close_accel", (KeyStroke.getKeyStroke
       (KeyEvent.VK_W, ActionEvent.CTRL_MASK))},
+
+    {"file_info", "Info..."},
+    {"file_info_mnemonic", KeyEvent.VK_I},
 
     {"file_exit", "Exit"},
     {"file_exit_mnemonic", KeyEvent.VK_X},

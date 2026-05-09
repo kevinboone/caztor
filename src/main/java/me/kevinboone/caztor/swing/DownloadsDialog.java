@@ -430,10 +430,19 @@ class DownloadComponent extends JPanel
     {
     String displayName = download.getTarget().getDisplayName();
     String url = download.getURL();
-    int size = download.getSize();
+    long size = download.getSize();
     filenameLabel.setText (displayName);
     urlLabel.setText (url);
-    sizeLabel.setText (FileUtil.humanBytes (size));
+    long contentLength = download.getContentLength();
+    if (contentLength > 0)
+      {
+      sizeLabel.setText (FileUtil.humanBytes (size) + 
+        " (" + (size * 100 / contentLength) + "%)");
+      }
+    else
+      {
+      sizeLabel.setText (FileUtil.humanBytes (size));
+      }
     switch (download.getStatus())
       {
       case Download.DS_ONGOING:

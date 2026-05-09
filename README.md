@@ -2,7 +2,7 @@
 
 A Java-based graphical browser for Gemini and other 'small net' protocols
 
-Version 1.0.0, Kevin Boone, April 2026
+Version 1.0.2, Kevin Boone, May 2026
 
 **Note**  
 Caztor 1.0 is a development of JGemini, but it's radically different in many
@@ -20,13 +20,13 @@ to Caztor settings.
 
 ## What is Caztor?
 
-Caztor is a graphical client for the Gemini, Spartan, Gopher, and "Nightfall
-Express" (`nex`) protocols.  It looks and behaves rather like the first
-graphical Web browsers from the 90s. So far as I know, it supports all the
-features it is required to support by the various specifications, and little
-else.  It's useable, though: I use it every day.
+Caztor is a graphical client for the Gemini, Spartan, Gopher, "Nightfall
+Express" (`nex`), Demarkus, and Kepler protocols.  It looks and behaves rather
+like the first graphical Web browsers from the 90s. So far as I know, it
+supports all the features it is required to support by the various
+specifications, and little else.  It's useable, though: I use it every day.
 
-## Why another Gemini client?
+## Why another Gemini (etc) client?
 
 There's no good reason. I wrote JGemini, as it then was, a long time ago,
 before there were any reasonable graphical clients for the Gemini protocol for
@@ -67,7 +67,7 @@ work.
 
 - No specific installation procedure (if you have a Java JVM) -- Caztor is
   supplied as a single Java JAR file
-- Supports Gemini, Spartan, Gopher, and `nex` protocols
+- Supports Gemini, Spartan, Gopher, `nex`, Demarkus, and Kepler protocols
 - Handles Gemtext, CommonMark Markdown, and plain (usually UTF-8) text
 - Renders local files as well as remote content
 - Authentication using per-server client certificates
@@ -77,6 +77,8 @@ work.
 - Uses anti-aliased font rendering for a smoother text appearance
 - Fetches documents asynchronously to improve user interface responsiveness
 - Download manager
+- Aggregates Atom and gemsub feeds, with a user interface for  management
+  and troubleshooting
 - Text selection with cut-and-paste
 - Search in document
 - Supports multiple windows
@@ -85,7 +87,6 @@ work.
 - Reasonably comprehensive documentation with built-in viewer
 - Rudimentary bookmark support, with built-in editor
 - Rudimentary media streaming support, using an external player
-- Parses and displays Atom feeds
 
 ## Installing and running Caztor
 
@@ -423,8 +424,9 @@ Caztor version 1.0.1 -- April 2026
 - Preliminary Demarkus browsing support
 - Updated documentation
 
-Caztor version 1.0.2 -- April 2026
+Caztor version 1.0.2 -- May 2026
 
+- Preliminary support for the Kepler protocol
 - Default download directory can be set in the configuration file
 - Imposed a configuration limit on the number of redirections allowed
   to a single request
@@ -434,7 +436,7 @@ Caztor version 1.0.2 -- April 2026
 - Many changes to inter-element spacing, and corresponding changes to the
   theme CSS file. These changes are to give effect to Gemtext authors who
   do the right thing, and don't insert additional spacing between titles
-  and paragraphs.
+  and paragraphs
 - Added "Gemtext lines as paragraphs" setting, to insert extra vertical
   space into documents that don't have blank lines for spacing
 - Completely re-worked the Gemtext parser, to group elements like
@@ -442,4 +444,8 @@ Caztor version 1.0.2 -- April 2026
   layout and spacing
 - With Spartan, set the request path to "/" if the user's URL has no
   path at all
+- Fixed a bug where text prompts from 1x responses weren't being
+  shown to the user
+- Added File|Info menu command, to show information about the file being
+  viewed
 

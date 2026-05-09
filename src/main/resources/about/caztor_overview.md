@@ -15,8 +15,8 @@ Caztor is distributed as a single Java JAR file, and requires
 ## Features
 
 - Supplied as a single Java JAR file
-- Supports Gemini, Spartan, Gopher, Demarkus (`mark:`) and 
-  Nightfall Express (`nex:`) protocols
+- Supports Gemini, Spartan, Gopher, Demarkus (`mark:`),
+  Nightfall Express (`nex:`), and Kepler protocols
 - Displays Gemtext, CommonMark Markdown, and plain text
 - Authenticates using per-server client certificates
 - Built-in client certificate manager, which can create new certificates and

@@ -19,6 +19,7 @@ import javax.swing.filechooser.*;
 import javax.swing.border.EmptyBorder;
 import java.net.*;
 import java.io.*;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 import me.kevinboone.caztor.Version;
@@ -389,7 +390,9 @@ public class MainWindow extends JFrame implements ConfigChangeListener
   public boolean canIdentity ()
     {
     if (baseUri == null) return false;
-    return ("gemini".equals (baseUri.getProtocol()));
+    if ("gemini".equals (baseUri.getProtocol())) return true;
+    if ("keplers".equals (baseUri.getProtocol())) return true;
+    return false;
     }
 
 /*=========================================================================
@@ -575,6 +578,10 @@ public class MainWindow extends JFrame implements ConfigChangeListener
     JMenuItem saveMenuItem = createMenuItem ("file_save");
     saveMenuItem.addActionListener((event) -> menuCommandSave());
     fileMenu.add (saveMenuItem);
+    fileMenu.add (new JSeparator());
+    JMenuItem infoMenuItem = createMenuItem ("file_info"); 
+    infoMenuItem.addActionListener((event) -> menuCommandInfo());
+    fileMenu.add (infoMenuItem);
     fileMenu.add (new JSeparator());
     JMenuItem closeMenuItem = createMenuItem ("file_close"); 
     closeMenuItem.addActionListener((event) -> 
@@ -1187,7 +1194,7 @@ void ensureFeedManagerDialogVisible()
 
     int startingCount = retryUrl.toString().getBytes().length;
     // Max URL is 1024 for Gemini
-    TextEntryDialog d = new TextEntryDialog (this, 1024 - startingCount);
+    TextEntryDialog d = new TextEntryDialog (this, 1024 - startingCount, prompt);
     d.setVisible (true);
     String str = d.getInput();
     if(str != null)
@@ -1272,6 +1279,7 @@ void ensureFeedManagerDialogVisible()
   public boolean hasServerCert()
     {
     if ("gemini".equals (baseUri.getProtocol())) return true;
+    if ("keplers".equals (baseUri.getProtocol())) return true;
     if ("mark".equals (baseUri.getProtocol())) return true;
     return false;
     }
@@ -1298,7 +1306,7 @@ void ensureFeedManagerDialogVisible()
   private ResponseContent loadResponseContent (URL url, URLConnection conn)
     {
     Logger.in();
-    ResponseContent gc = new ResponseContent (url);
+    ResponseContent rc = new ResponseContent (url);
     try
       {
       Object o = conn.getContent();
@@ -1314,23 +1322,41 @@ void ensureFeedManagerDialogVisible()
         content = (byte[]) o; 
         }
       String mime = conn.getContentType();
-      gc.setMime (mime);
-      gc.setContent (content);
+      rc.setMime (mime);
+      rc.setContent (content);
       // Changed: we can't rely on baseUri at this point
       //String proto = baseUri.getProtocol();
+      rc.setLastRetrievedFromSource (Instant.now().toEpochMilli() / 1000);
       String proto = url.getProtocol();
       // getRequestProperty() fails in a weird way on file: URIs.
-      if (!"file".equals (proto))
-        gc.setCertinfo (conn.getRequestProperty ("certinfo"));
+      if ("file".equals (proto))
+        {
+        File f = new File (url.toURI());
+        rc.setContentLength (f.length());
+        rc.setLastUpdated (f.lastModified() / 1000);
+        }
+      else
+        {
+        rc.setCertinfo (conn.getRequestProperty ("certinfo"));
+        String s = conn.getRequestProperty ("last-updated");
+        if (s != null)
+          rc.setLastUpdated (Long.parseLong (s));
+        s = conn.getRequestProperty ("content-length");
+        if (s != null)
+          rc.setContentLength (Long.parseLong (s));
+        s = conn.getRequestProperty ("expires");
+        if (s != null)
+          rc.setExpires (Long.parseLong (s));
+        }
       }
     catch (Exception e)
       {
       // Note that not all exceptions relate to errors. For example,
       //   redirection responses are treated as exceptions.
-      gc.setException (e);
+      rc.setException (e);
       }
     Logger.out();
-    return gc;
+    return rc;
     }
 
 /*=========================================================================
@@ -1757,8 +1783,14 @@ void ensureFeedManagerDialogVisible()
       if (uri.getProtocol().equals ("gemini"))
 	{
 	loadFromUri (uri, null, false, 0);
-        // Changed: don't set baseUri here, but when the response completes
-	//baseUri = uri;
+	}
+      else if (uri.getProtocol().equals ("keplers"))
+	{
+	loadFromUri (uri, null, false, 0);
+	}
+      else if (uri.getProtocol().equals ("kepler"))
+	{
+	loadFromUri (uri, null, false, 0);
 	}
       else if (uri.getProtocol().equals ("mark"))
 	{
@@ -1774,7 +1806,7 @@ void ensureFeedManagerDialogVisible()
         String path = uri.getPath();
         if (path.startsWith ("/7/"))
           {
-          TextEntryDialog d = new TextEntryDialog (this, 1024);
+          TextEntryDialog d = new TextEntryDialog (this, 1024, null);
           d.setVisible (true);
           String str = d.getInput();
 	  if (str != null)
@@ -1992,6 +2024,110 @@ void ensureFeedManagerDialogVisible()
     {
     Logger.in();
     fwd();
+    Logger.out();
+    }
+
+/*=========================================================================
+  
+   menuCommandInfo
+
+=========================================================================*/
+  private void menuCommandInfo()
+    {
+    Logger.in();
+    StringBuffer pageInfo = new StringBuffer(); 
+    if (lastContent != null)
+      {
+      pageInfo.append (messagesBundle.getString ("full_url"));
+      pageInfo.append ("\n");
+      pageInfo.append (lastContent.getURL());
+      pageInfo.append ("\n\n");
+      pageInfo.append (messagesBundle.getString ("mime_type"));
+      pageInfo.append ("\n");
+      String mt = lastContent.getMime();
+      if (mt != null)
+        pageInfo.append (mt);
+      else
+        pageInfo.append (messagesBundle.getString ("unknown"));
+      pageInfo.append ("\n\n");
+      pageInfo.append (messagesBundle.getString ("actual_size"));
+      pageInfo.append ("\n");
+      byte[] c = lastContent.getContent();
+      if (c != null)
+        {
+        pageInfo.append (FileUtil.humanBytes (c.length));
+        }
+      else
+        { 
+        pageInfo.append (messagesBundle.getString ("unknown"));
+        }
+      pageInfo.append ("\n\n");
+      pageInfo.append (messagesBundle.getString ("reported_size"));
+      pageInfo.append ("\n");
+      long reportedSize = lastContent.getContentLength();
+      if (reportedSize >= 0)
+        {
+        pageInfo.append (FileUtil.humanBytes (reportedSize));
+        }
+      else
+        {
+        pageInfo.append (messagesBundle.getString ("unknown"));
+        }
+      pageInfo.append ("\n\n");
+      pageInfo.append (messagesBundle.getString ("last_updated"));
+      pageInfo.append ("\n");
+      long lastUpdated = lastContent.getLastUpdated();
+      if (lastUpdated > 0)
+        {
+        Instant inst = Instant.ofEpochSecond (lastUpdated);
+        pageInfo.append (inst.toString());
+        }
+      else
+        {
+        pageInfo.append (messagesBundle.getString ("unknown"));
+        }
+      pageInfo.append ("\n\n");
+      pageInfo.append (messagesBundle.getString ("last_retrieved_from_source"));
+      pageInfo.append ("\n");
+      long lastRetrievedFromSource = lastContent.getLastRetrievedFromSource();
+      if (lastRetrievedFromSource > 0)
+        {
+        Instant inst = Instant.ofEpochSecond (lastRetrievedFromSource);
+        pageInfo.append (inst.toString());
+        }
+      else
+        {
+        pageInfo.append (messagesBundle.getString ("unknown"));
+        }
+      pageInfo.append ("\n\n");
+      pageInfo.append (messagesBundle.getString ("expires"));
+      pageInfo.append ("\n");
+      long expires = lastContent.getExpires();
+      if (expires > 0)
+        {
+        Instant inst = Instant.ofEpochSecond (expires);
+        pageInfo.append (inst.toString());
+        }
+      else
+        {
+        pageInfo.append (messagesBundle.getString ("unknown"));
+        }
+      pageInfo.append ("\n\n");
+      pageInfo.append ("\n\n");
+      }
+    else if (baseUri != null)
+      {
+      pageInfo.append (messagesBundle.getString ("full_url"));
+      pageInfo.append ("\n");
+      pageInfo.append (baseUri);
+      pageInfo.append ("\n\n");
+      pageInfo.append (messagesBundle.getString ("no_info_avail"));
+      }
+    else
+      {
+      pageInfo.append (messagesBundle.getString ("no_info_avail"));
+      } 
+    reportGenInfo (new String(pageInfo));
     Logger.out();
     }
 
@@ -2638,7 +2774,10 @@ void ensureFeedManagerDialogVisible()
         + ": " + e.getMessage());
       }
     else
+      {
+      //e.printStackTrace();
       reportGenError (url, e.getMessage());
+      }
     }
 
 /*=========================================================================

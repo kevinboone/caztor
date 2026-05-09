@@ -27,7 +27,8 @@ public abstract class SwingDownload implements Download
   {
   protected String url = null;
   protected int status = Download.DS_UNKNOWN;
-  protected int size = 0; 
+  protected long size = 0; 
+  protected long contentLength = -1; 
   protected boolean isExposed = false;
   protected MainWindow mainWindow;
   protected SwingWorker dlWorker = null;
@@ -72,7 +73,13 @@ public abstract class SwingDownload implements Download
     }
 
   @Override
-  public int getSize()
+  public long getContentLength()
+    {
+    return contentLength;
+    }
+
+  @Override
+  public long getSize()
     {
     return size;
     }

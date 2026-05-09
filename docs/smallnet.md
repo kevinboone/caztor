@@ -76,6 +76,16 @@ only the most recent version. Demarkus URLs begin with the `mark:` protocol.
 For more information, please see the 
 [Demarkus project home page](https://www.demarkus.io/).
 
+## Kepler
+
+Kepler is a draft specification for a protocol that extends Gemini to
+increase scalability, and improve the user experience a little.
+For more information, see the [protocol specification and supporting
+documents on GitHub](https://github.com/kevinboone/kepler-protocol).
+
+Because Kepler is still in draft, Caztor does not implement many of the new
+features, such as caching. However, it does allow access to Kepler servers,
+both with and without TLS encryption.
 
 [Documentation index](about:/index.md)
 

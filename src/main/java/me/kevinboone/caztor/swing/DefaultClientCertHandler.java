@@ -65,7 +65,8 @@ public class DefaultClientCertHandler
       return;
       }
 
-    if (protocol != null && protocol.equals ("gemini"))
+    if (protocol != null && 
+          (protocol.equals ("gemini") || protocol.equals ("keplers")))
       {
       IdentityDialog id = new IdentityDialog (mainWindow, 
         baseUri, mainWindow);

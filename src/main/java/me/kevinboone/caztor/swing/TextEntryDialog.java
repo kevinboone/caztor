@@ -29,7 +29,7 @@ private JTextArea textArea;
 private JLabel countLabel;
 private int maxInputBytes;
 
-public TextEntryDialog (JFrame parent, int maxInputBytes)
+public TextEntryDialog (JFrame parent, int maxInputBytes, String prompt)
   {
   super (parent, Version.APP_NAME, Dialog.ModalityType.DOCUMENT_MODAL);
 
@@ -38,8 +38,11 @@ public TextEntryDialog (JFrame parent, int maxInputBytes)
   setLayout(new BorderLayout());
  
   textArea = new JTextArea (8, 40);
-  textArea.setBorder (BorderFactory.createTitledBorder 
-    (dialogsBundle.getString ("textentrydialog_enter_text")));
+  if (prompt == null)
+    textArea.setBorder (BorderFactory.createTitledBorder 
+      (dialogsBundle.getString ("textentrydialog_enter_text")));
+  else
+    textArea.setBorder (BorderFactory.createTitledBorder (prompt));
   textArea.setLineWrap (true); 
   textArea.setWrapStyleWord (true); 
   textArea.addKeyListener(new KeyAdapter() 

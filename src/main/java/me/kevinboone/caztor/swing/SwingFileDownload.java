@@ -76,6 +76,11 @@ public class SwingFileDownload extends SwingDownload
 	  URLConnection conn = _url.openConnection();
           downloadMonitor.add (self);
 	  conn.connect();
+          String sContentLength = conn.getRequestProperty ("content-length");
+          if (sContentLength != null)
+             {
+             contentLength = Long.parseLong (sContentLength);
+             }
           is = conn.getInputStream();
 	  size = 0;
 	  int nRead;
@@ -101,7 +106,7 @@ public class SwingFileDownload extends SwingDownload
               {
               // Put the size on the notification queue, where it will
               //   in due course be picked up by process()
-              Integer message = new Integer (size);
+              Long message = new Long (size);
 	      publish (message);
               lastNotification = now;
               }
@@ -109,7 +114,7 @@ public class SwingFileDownload extends SwingDownload
 
           // We _must_ notify at the end of the transfer, else the
           //   client class could end up with the wrong final size
-          Integer message = new Integer (size);
+          Long message = new Long (size);
 	  publish (message);
 
           if (is != null) is.close();
@@ -197,7 +202,7 @@ public class SwingFileDownload extends SwingDownload
         { 
 	for (Object message : chunks)
 	  {
-	  Integer size = (Integer)message;
+	  Long size = (Long)message;
 	  if (dm != null) dm.notifyChange (self); 
           }
         } 

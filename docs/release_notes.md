@@ -2,10 +2,25 @@
 
 ## Caztor 1.0.2
 
-- Default download directory can be set in the configuration file.
-- The number of redirections is now limited, to protect against
-  redirection loops.
-- Added "dark\_mono" theme.
+- Preliminary support for the Kepler protocol
+- Default download directory can be set in the configuration file
+- Blocked redirection loops
+- Added "dark\_mono" theme
+- Added self-signed certificate support for Demarkus, in line with other 
+  protocols
+- Many changes to inter-element spacing in the viewer, with corresponding
+  changes to the theme CSS files. These changes improve the readability
+  of Gemtext whose Gemtext authors do the "right thing", and don't insert
+  additional spacing between titles and paragraphs
+- Completely re-worked the Gemtext parser, to group elements like
+  lists into a single HTML block. This allows for better control of
+  layout and spacing
+- With Spartan, set the request path to "/" if the user's URL has no
+  path at all
+- Fixed a bug where text prompts from 1x responses weren't being
+  shown to the user
+- Added File|Info menu command, to show information about the file being
+  viewed
 
 ## Caztor 1.0.1
 

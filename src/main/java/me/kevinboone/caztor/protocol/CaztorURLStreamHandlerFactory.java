@@ -28,6 +28,14 @@ public class CaztorURLStreamHandlerFactory implements URLStreamHandlerFactory
       {
       return new GeminiURLStreamHandler();
       }
+    if ("keplers".equals(protocol)) 
+      {
+      return new KeplersURLStreamHandler();
+      }
+    if ("kepler".equals(protocol)) 
+      {
+      return new KeplerURLStreamHandler();
+      }
     else if ("nex".equals(protocol)) 
       {
       return new NexURLStreamHandler();

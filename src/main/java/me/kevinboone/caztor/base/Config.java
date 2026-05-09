@@ -572,6 +572,17 @@ public class Config extends Properties
 
 /*=========================================================================
   
+  getUserLanguage
+
+=========================================================================*/
+  public String getUserLanguage()
+    {
+    return getProperty (Strings.USER_LANGUAGE, 
+      Defaults.DEFLT_USER_LANGUAGE);
+    }
+
+/*=========================================================================
+  
   getStreamPlayer
 
 =========================================================================*/
@@ -1032,6 +1043,16 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
   public void setUrlbarSearchUrl (String url)
     {
     setProperty (Strings.URLBAR_SEARCH_URL, url);
+    }
+
+/*=========================================================================
+  
+  setUserLanguage
+
+=========================================================================*/
+  public void setUserLanguage (String language)
+    {
+    setProperty (Strings.USER_LANGUAGE, language);
     }
 
 /*=========================================================================

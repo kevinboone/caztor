@@ -47,6 +47,7 @@ public interface Defaults
   public final static boolean DEFLT_URLBAR_SEARCH_ENABLED = true;
   public final static boolean DEFLT_FEEDS_UPDATE_ON_STARTUP = false;
   public final static boolean  DEFLT_GEMTEXT_LINEASPARA = false;
+  public final static String DEFLT_USER_LANGUAGE = "en-US,en";
 
 
   // File and directory names

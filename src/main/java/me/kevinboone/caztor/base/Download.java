@@ -39,10 +39,13 @@ public interface Download
   */
   public DownloadTarget getTarget();
 
+  // Get the content length supplied by the server, if one actually was
+  public long getContentLength();
+
   /** Get the size of the transfer. Implementations are expected to
       keep this up to date as the transfer progresses. 
   */
-  public int getSize(); 
+  public long getSize(); 
   public int getStatus(); 
 
   /** Not yet used -- it was supposed to indicate whether a transfer

@@ -215,6 +215,13 @@ Default is 'yes' -- search from the URL bar is enabled.
 The URL to which the search expression is appended. Default is 
 `gemini://tlgs.one/search`.
 
+`user.language`  
+The user's list of preferred languages, in the same format used by web
+browsers, and defined in section 5.3.5 of 
+[RFC7231](https://datatracker.ietf.org/doc/html/rfc7231#section-5.3.5)
+The default is `en-US,en`, meaning that the preferred language is
+US English, but other English variants are acceptable.
+
 `window.w`  
 Width of the main window, in pixels. Default: 1200 pixels. Please be aware that
 this will be overwritten if you resize the window at runtime.

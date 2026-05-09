@@ -55,6 +55,7 @@ public interface Strings
   public final static String UI_NEW_WINDOW_MODE = "ui.new_window";
   public final static String URLBAR_SEARCH_ENABLED = "urlbar.search.enabled";
   public final static String URLBAR_SEARCH_URL = "urlbar.search.url";
+  public final static String USER_LANGUAGE = "user.language";
   public final static String URL_HOME = "url.home";
   public final static String WINDOW_W = "window.w";
   public final static String WINDOW_H = "window.h";
