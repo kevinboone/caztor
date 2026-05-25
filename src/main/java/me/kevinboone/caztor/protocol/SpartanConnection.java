@@ -12,7 +12,9 @@ package me.kevinboone.caztor.protocol;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.nio.charset.StandardCharsets;
 import me.kevinboone.caztor.base.*;
+import me.kevinboone.caztor.swing.*;
 
 /** A subclass of URLConnection that handles the Spartan protocol. */
 public class SpartanConnection extends URLConnection
@@ -62,8 +64,29 @@ public class SpartanConnection extends URLConnection
 
     int timeoutMs = config.getConnectTimeout() * 1000;
 
+    byte[] spartanUpload = null;
     String host = getURL().getHost();
     String path = getURL().getPath();
+    String query = getURL().getQuery();
+    // This is very ugly, because it brings the Swing user interface into
+    //   this protocol component, which is supposed to be independent
+    //   of the user interface. But handling Spartan prompts is going to
+    //   be very ugly, however it's done.
+    if (query != null)
+      if (query.endsWith ("spartanprompt"))
+        {
+        TextEntryDialog d = new TextEntryDialog (null, -1, "Enter text");
+        d.setVisible (true);
+        String str = d.getInput();
+        if (str != null)
+          {
+          // Spec is not clear, but assume UTF-8 for the upload
+          spartanUpload = str.getBytes (StandardCharsets.UTF_8); 
+          }
+        else
+          {
+          }
+        }
 
     if (path.length() == 0) // Spartan fails completely if there isn't a path
       path = "/";
@@ -77,9 +100,19 @@ public class SpartanConnection extends URLConnection
     OutputStream os = s.getOutputStream();
     PrintStream pos = new PrintStream (os);
 
-    String request = getURL().getHost() + " " + path + " 0\r\n";
+    int uploadSize = 0;
+    if (spartanUpload != null)
+      uploadSize = spartanUpload.length; 
+
+    String request = getURL().getHost() + " " + path + " " 
+      + uploadSize + "\r\n";
     pos.print (request); 
     pos.flush();
+    if (uploadSize > 0)
+      {
+
+      os.write (spartanUpload);
+      }
 
     char c; 
     String line = ""; 

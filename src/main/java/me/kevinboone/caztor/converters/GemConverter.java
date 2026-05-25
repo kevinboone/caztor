@@ -10,6 +10,7 @@
 package me.kevinboone.caztor.converters;
 import java.net.*;
 import java.io.*;
+import java.nio.charset.*;
 import java.util.regex.Pattern;
 import me.kevinboone.caztor.base.*;
 import net.fellbaum.jemoji.*;
@@ -31,7 +32,8 @@ public class GemConverter extends TextLikeConverter implements Converter
   public static final int START_LIST = 3;  
   public static final int START_QUOTE = 4;  
   public static final int START_LINK = 5;  
-  public static final int START_EOF = 6;  
+  public static final int START_SPARTAN_LINK = 6;  
+  public static final int START_EOF = 7;  
 
   private int mode;
   private boolean lineAsPara;
@@ -66,6 +68,8 @@ public class GemConverter extends TextLikeConverter implements Converter
       startCode = START_LIST;
     else if (gem.startsWith ("=>"))
       startCode = START_LINK;
+    else if (gem.startsWith ("=:"))
+      startCode = START_SPARTAN_LINK;
     else
       startCode = START_OTHER;
 
@@ -98,9 +102,14 @@ public class GemConverter extends TextLikeConverter implements Converter
             return "<ul><li>&nbsp;" + escapeHtml(gem.substring(2)) + "\n";
           case START_LINK:
             if (lineAsPara)
-              return "<p>" + parseLink (gem.substring(2).trim()) + "</p>\n";
+              return "<p>" + parseLink (gem.substring(2).trim(), false) + "</p>\n";
             else
-              return parseLink (gem.substring(2).trim()) + "<br/>\n";
+              return parseLink (gem.substring(2).trim(), false) + "<br/>\n";
+          case START_SPARTAN_LINK:
+            if (lineAsPara)
+              return "<p>" + parseLink (gem.substring(2).trim(), true) + "</p>\n";
+            else
+              return parseLink (gem.substring(2).trim(), true) + "<br/>\n";
           default:
             if (gem.length() == 0) 
               return "<br/>\n";
@@ -127,7 +136,11 @@ public class GemConverter extends TextLikeConverter implements Converter
         switch (startCode)
           {
           case START_LIST:
-            return "</li>\n<li>&nbsp;" + gem.substring(1).trim(); 
+            String s = gem.substring(1).trim();
+            if (s.length() == 0)
+              return "<p></p>";
+            else
+              return "</li>\n<li>&nbsp;" + gem.substring(1).trim(); 
           case START_EOF:
             return "</li></ul>\n";
           default:
@@ -138,14 +151,10 @@ public class GemConverter extends TextLikeConverter implements Converter
         switch (startCode)
           {
           case START_QUOTE:
-            if (trimmed.length() < 2) // Empty quote line
-              {
-              if (lineAsPara)
-                return "</p><p></p><p>\n";
-              else
-                return "<p>&nbsp;</p>\n";
-              }
-            return gem.substring(1); 
+            if (lineAsPara)
+              return "</p><p>" + gem.substring(1) + "\n";
+            else
+              return "<br/>" + gem.substring(1) + "\n";
           case START_EOF:
             if (lineAsPara)
               return "</p></blockquote>\n";
@@ -165,8 +174,9 @@ public class GemConverter extends TextLikeConverter implements Converter
 
   /** Convert the Gemtext file to HTML. */ 
   @Override
-  public String toHtml (String gem)
+  public String toHtml (byte[] content, Charset charset)
     {
+    String gem = new String (content, charset);
     mode = MODE_NORMAL;
     lineAsPara = Config.getConfig().getGemtextLineAsPara();
     StringBuffer sb = new StringBuffer();

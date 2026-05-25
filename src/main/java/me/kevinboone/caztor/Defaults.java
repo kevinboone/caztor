@@ -23,6 +23,7 @@ public interface Defaults
   public final static String DEFLT_FEEDS_MAX_AGE = "14"; // Days
   public final static String DEFLT_HISTORY_SIZE = "30";
   public final static String DEFLT_INLINE_IMAGE_WIDTH = "600";
+  public final static int DEFLT_UI_LINK = 62;
   public final static String DEFLT_UI_CONTROL_FONT = "Sans 20; Emoji 20";
   public final static String DEFLT_UI_DOCUMENT_THEME = "light";
   public final static String DEFLT_UI_USER_FONT = "Sans 20; Emoji 20";

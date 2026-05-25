@@ -19,7 +19,9 @@ package me.kevinboone.caztor.base;
 import java.util.*;
 import java.text.*;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.net.*;
+import me.kevinboone.caztor.protocol.ZipfileConnection;
 
 /** A collection of utility methods for parsing filenames and 
     guessing file contents. */
@@ -374,6 +376,10 @@ public class FileUtil
 	return true; 
       else if (mime.startsWith ("image/"))
         return true;
+      else if (mime.startsWith ("application/gpub+zip"))
+        return true;
+      else if (mime.startsWith ("application/mbook+zip"))
+        return true;
       }
 
     if (urlStr != null)
@@ -385,6 +391,10 @@ public class FileUtil
       else if (urlStr.endsWith (".txt"))
 	return true;
       else if (urlStr.endsWith (".md"))
+	return true;
+      else if (urlStr.endsWith (".gpub"))
+	return true;
+      else if (urlStr.endsWith (".mbook"))
 	return true;
       }
 
@@ -501,6 +511,12 @@ public class FileUtil
       java.net.URL newUrl = new URL (baseUri, "/~" + temp + "/");
       return newUrl;
       }
+    else if (baseUri.getProtocol().equals ("zipfile"))
+      {
+      String newUrlString = "zipfile://" + ZipfileConnection.getBaseUrl (baseUri.getPath()) + "/"; 
+      java.net.URL newUrl = new URL (newUrlString);
+      return newUrl;
+      }
     else
       {
       java.net.URL newUrl = new URL (baseUri, "/"); 
@@ -516,6 +532,7 @@ public class FileUtil
   public static String guessMimeTypeFromFilename (String filename)
     {
     if (filename.endsWith (".gmi")) return "text/gemini";
+    if (filename.endsWith (".md")) return "text/markdown";
     return URLConnection.guessContentTypeFromName (filename); 
     }
 
@@ -645,6 +662,32 @@ public class FileUtil
 
 /*============================================================================
 
+  readInputStreamToString 
+
+  TODO: some sort of user progress indication
+
+============================================================================*/
+  /** Reads fully from the URL to a byte array. 
+  */
+  public static String readInputStreamToString (InputStream is, Charset cs)
+      throws IOException
+    {
+    ByteArrayOutputStream content_buffer = new ByteArrayOutputStream();
+
+    int nRead;
+    byte[] data = new byte[16384];
+
+    while ((nRead = is.read (data, 0, data.length)) != -1)
+      {
+      content_buffer.write (data, 0, nRead);
+      }
+
+    String s = new String (content_buffer.toByteArray(), cs);
+    return s;
+    }
+
+/*============================================================================
+
   urlToByteArray 
 
   TODO: some sort of user progress indication
@@ -655,7 +698,6 @@ public class FileUtil
   public static byte[] urlToByteArray (URL url)
       throws IOException
     {
-
     InputStream is = url.openConnection().getInputStream();
 
     ByteArrayOutputStream content_buffer = new ByteArrayOutputStream();

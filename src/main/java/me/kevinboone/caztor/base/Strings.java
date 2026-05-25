@@ -52,6 +52,7 @@ public interface Strings
   public final static String UI_DOCUMENT_FONT_SIZE = "ui.document.font.size";
   public final static String UI_ICON_SIZE = "ui.icon.size";
   public final static String UI_ICONS_MONO = "ui.icons.mono";
+  public final static String UI_LINK = "ui.link";
   public final static String UI_NEW_WINDOW_MODE = "ui.new_window";
   public final static String URLBAR_SEARCH_ENABLED = "urlbar.search.enabled";
   public final static String URLBAR_SEARCH_URL = "urlbar.search.url";

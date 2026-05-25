@@ -25,9 +25,11 @@ public class AppearanceSettingsPane extends SettingsPane
   private JTextField documentBaseFontSize;
   private JCheckBox emojiStripBookmarks; 
   private JCheckBox gemtextLineAsPara; 
+  private JComboBox linkCharacter; 
   private int oldDocumentBaseFontSize;
   private boolean oldEmojiStripBookmarks;
   private boolean oldGemtextLineAsPara;
+  private int oldLinkCharacter;
 
 /*=========================================================================
   
@@ -42,6 +44,7 @@ public class AppearanceSettingsPane extends SettingsPane
     oldDocumentBaseFontSize = config.getDocumentBaseFontSize();
     oldEmojiStripBookmarks = config.getEmojiStripBookmarks();
     oldGemtextLineAsPara = config.getGemtextLineAsPara();
+    oldLinkCharacter = (int)(config.getDefltLink().charAt(0));
 
     GridBagLayout gl = new GridBagLayout ();
     setLayout (gl);
@@ -105,6 +108,48 @@ public class AppearanceSettingsPane extends SettingsPane
     gemtextLineAsParaLabel.setLabelFor (gemtextLineAsPara); 
     add (gemtextLineAsPara, gbc21);
 
+    // Row 3, col 0
+    GridBagConstraints gbc30 = new GridBagConstraints();
+    gbc30.insets = new Insets (5, 5, 5, 5);
+    gbc30.gridy = 3;
+    gbc30.gridx = 0;
+    gbc30.anchor = gbc30.EAST;
+    JLabel linkCharacterLabel = createLabel 
+      ("appearance_settings_pane_link_character");
+    add (linkCharacterLabel, gbc30);
+
+    // Row 2, col 1
+    GridBagConstraints gbc31 = new GridBagConstraints();
+    gbc31.insets = new Insets (5, 5, 5, 5);
+    gbc31.gridy = 3;
+    gbc31.gridx = 1;
+    linkCharacter = new JComboBox();
+    linkCharacter.addItem (">");
+    linkCharacter.addItem ("→");
+    linkCharacter.addItem ("↠");
+    linkCharacter.addItem ("↣");
+    linkCharacter.addItem ("↦");
+    linkCharacter.addItem ("⇀");
+    linkCharacter.addItem ("⇒");
+    linkCharacter.addItem ("⇨");
+    linkCharacter.addItem ("→");
+    linkCharacter.addItem ("➜");
+    linkCharacter.addItem ("➝");
+    linkCharacter.addItem ("➡");
+    linkCharacter.addItem ("➣");
+    linkCharacter.addItem ("➤");
+    linkCharacter.addItem ("➨");
+    linkCharacter.addItem ("➩");
+    linkCharacter.addItem ("➱");
+    linkCharacter.addItem ("➸");
+    linkCharacter.addItem ("🢂");
+    linkCharacter.addItem ("🡺");
+    linkCharacter.addItem ("🡆");
+    linkCharacter.addItem ("🠲");
+    linkCharacter.setSelectedItem ("" + (char)oldLinkCharacter);
+    linkCharacterLabel.setLabelFor (linkCharacter); 
+    add (linkCharacter, gbc31);
+
     // Set digits only
     documentBaseFontSize.setDocument (new PlainDocument() 
       {
@@ -167,6 +212,16 @@ public class AppearanceSettingsPane extends SettingsPane
       ccMode = ConfigChangeListener.CCMODE_RELOAD; 
       }
 
+    String s = (String)linkCharacter.getSelectedItem();
+    if (s != null)
+      {
+      int newLinkCharacter = (int)(s.charAt(0)); 
+      if (newLinkCharacter != oldLinkCharacter)
+	{
+	config.setDefltLinkCode (newLinkCharacter);
+	ccMode = ConfigChangeListener.CCMODE_RELOAD; 
+	} 
+      }
     }
   }
 

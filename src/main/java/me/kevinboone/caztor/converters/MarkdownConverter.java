@@ -10,6 +10,7 @@
 package me.kevinboone.caztor.converters;
 import java.net.*;
 import java.io.*;
+import java.nio.charset.*;
 import java.util.*;
 import me.kevinboone.caztor.base.*;
 import org.commonmark.Extension;
@@ -98,10 +99,12 @@ public class MarkdownConverter implements Converter
     }
 
   /** Convert the Markdown file to HTML. */ 
-  public String toHtml (String md)
+  public String toHtml (byte[] content, Charset charset)
     {
-    Node document = parser.parse(md);
-    String s = renderer.render(document);
+    String text = new String (content, charset);
+    Node document = parser.parse (text);
+    String s = renderer.render (document);
+    //System.out.println (s);
     return s;
     }
   }

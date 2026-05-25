@@ -83,18 +83,6 @@ public TextEntryDialog (JFrame parent, int maxInputBytes, String prompt)
       }
     };
 
-/*
-  Action performSubmit = new AbstractAction ("Submit") 
-    {  
-    public void actionPerformed(ActionEvent e) 
-      {     
-      input = textArea.getText();
-      if (checkLength())
-        dispose();
-      }
-    };
-*/
-
   countLabel = new JLabel ("");
 
   JPanel buttonPanel = new JPanel();
@@ -108,12 +96,6 @@ public TextEntryDialog (JFrame parent, int maxInputBytes, String prompt)
   KeyStroke keyCancel = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
   cancelButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put (keyCancel, "performCancel"); 
   cancelButton.getActionMap().put ("performCancel", performCancel);
-
-/*
-  KeyStroke keySubmit = KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK);
-  submitButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put (keySubmit, "performSubmit"); 
-  submitButton.getActionMap().put ("performSubmit", performSubmit);
-*/
 
   checkLength();
 
@@ -131,6 +113,7 @@ public String getInput()
 
 public boolean checkLength()
   {
+  if (maxInputBytes < 0) return true;
   String prefix = "http://foo.bar/?";
   String s = textArea.getText();
   try

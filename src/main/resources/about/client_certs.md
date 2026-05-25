@@ -35,7 +35,7 @@ or per-protocol assignment.
 
 You can generate a new Java keystore at the command line as follows:
 
-    keytool -alg rsa -keystore {keystore_file.jks}
+    keytool -genkey -alg rsa -keystore {keystore_file.jks}
 
 You'll be prompted for the identity information to include. The resulting file will
 include both the certificate and the matching private key. It doesn't matter

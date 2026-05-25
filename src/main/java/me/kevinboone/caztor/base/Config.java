@@ -28,6 +28,7 @@ public class Config extends Properties
   private boolean urlbarSearchEnabled = false;
   private boolean historyEnabled = false;
   private boolean emojiStripBookmarks = false;
+  private String defltLink = "→";
 
   private Vector<ConfigChangeListener> listeners = new Vector<ConfigChangeListener>();
 
@@ -105,6 +106,11 @@ public class Config extends Properties
 
     emojiStripBookmarks = getBooleanProperty 
       (Strings.EMOJI_STRIP_BOOKMARKS, Defaults.DEFLT_EMOJI_STRIP_BOOKMARKS);
+
+    int linkChar = Integer.parseInt (getProperty (Strings.UI_LINK, 
+      "" + Defaults.DEFLT_UI_LINK));
+
+    defltLink = "" + (char)linkChar;
     }
 
 /*=========================================================================
@@ -572,6 +578,16 @@ public class Config extends Properties
 
 /*=========================================================================
   
+  getDefltLink
+
+=========================================================================*/
+  public String getDefltLink()
+    {
+    return defltLink;
+    }
+
+/*=========================================================================
+  
   getUserLanguage
 
 =========================================================================*/
@@ -834,6 +850,16 @@ public KeystoreSpec getKeystoreSpecForIdent (String ident)
   public void setConnectTimeout (int n)
     {
     setProperty (Strings.CONNECT_TIMEOUT, "" + n);
+    }
+
+/*=========================================================================
+  
+  setDefltLinkCode
+
+=========================================================================*/
+  public void setDefltLinkCode (int c)
+    {
+    setProperty (Strings.UI_LINK, "" + c);
     }
 
 /*=========================================================================

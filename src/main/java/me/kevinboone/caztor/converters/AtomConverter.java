@@ -10,6 +10,7 @@
 package me.kevinboone.caztor.converters;
 import java.net.*;
 import java.io.*;
+import java.nio.charset.*;
 import java.util.Map;
 import java.util.List;
 import javax.xml.transform.*;
@@ -32,9 +33,10 @@ public class AtomConverter implements Converter
     }
 
   /** Convert the Markdown file to HTML. */ 
-  public String toHtml (String xml)
+  public String toHtml (byte[] content, Charset charset)
     {
     Logger.in();
+    String xml = new String (content, charset);
     String s = ""; 
     try
       {

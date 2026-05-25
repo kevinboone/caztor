@@ -200,6 +200,15 @@ for changes to this setting to take effect. Default: 24 pixels.
 `ui.icons.mono`  
 Sets whether toolbar icons are shown in monochrome. Default: false.
 
+`ui.link` 
+The Unicode character that will be used for a Gemtext link, usually some kind
+of arrow. This character is not used for links whose text begins with an emoji,
+because Caztor assumes that the emoji is the link icon. This setting has
+to be given as a number, not a character, because Java requires that
+properties files use ISO-8859-1 encoding, that is, single-byte characters.
+Most of the symbols that might be used to denote a link can't be
+represented in this encoding.
+
 `ui.user_font`  
 Sets the font for text entry boxes.  Default is `Sans 20; Emoji 20`. For the
 format, see `ui.control_font`.

@@ -76,9 +76,20 @@ public class Main
       File file = new File (args[0]);
       if (file.isFile())
 	{
-	// It don't know if this will work on Windows. But who
-	//   uses the command line on Windows?
-	ui.loadURI ("file://" + file.getAbsolutePath());
+        if (args[0].endsWith ("gpub"))
+          {
+	  ui.loadURI ("zipfile://" + file.getAbsolutePath() + "/");
+          }
+        else if (args[0].endsWith ("mbook"))
+          {
+	  ui.loadURI ("zipfile://" + file.getAbsolutePath() + "/");
+          }
+        else
+          {
+	  // It don't know if this will work on Windows. But who
+	  //   uses the command line on Windows?
+	  ui.loadURI ("file://" + file.getAbsolutePath());
+          }
 	}
       else
 	{

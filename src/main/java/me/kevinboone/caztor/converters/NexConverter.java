@@ -10,6 +10,7 @@
 package me.kevinboone.caztor.converters;
 import java.net.*;
 import java.io.*;
+import java.nio.charset.*;
 import java.util.regex.Pattern;
 
 /** A class for converting nex-flavoured plain text to HTML. It's just
@@ -31,17 +32,16 @@ public class NexConverter extends TextLikeConverter implements Converter
   private String lineToHtml (String text)
     {
     if (text.startsWith ("=>"))
-      {
-      return parseLink (text.substring(2).trim());
-      }
+      return parseLink (text.substring(2).trim()) + "\n";
     else
       return formatLineAsHtml (escapeHtml(text)) + "\n";
     }
 
   /** Convert the plain text file to HTML. */ 
   @Override
-  public String toHtml (String text)
+  public String toHtml (byte[] content, Charset charset)
     {
+    String text = new String (content, charset);
     StringBuffer sb = new StringBuffer();
     String lines[] = text.split ("\n");
     sb.append ("<html><head><body><pre>\n");

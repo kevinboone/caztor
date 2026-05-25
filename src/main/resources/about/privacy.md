@@ -34,6 +34,8 @@ Caztor might store the following on disk.
   application has finished with them or not. If you choose to save a 
   file in whatever application handled it then, of course, it will be
   saved permanently
+- Gempub e-books, which Caztor treats the same as files that are handed
+  off to the desktop, even though they are handled internally
 - Your URL history, but only if you have explicitly enabled this
   Otherwise, history is only stored in memory, for the duration of the session.
 - Bookmarks you explicitly save

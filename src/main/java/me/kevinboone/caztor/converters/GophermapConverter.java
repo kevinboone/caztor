@@ -10,6 +10,7 @@
 package me.kevinboone.caztor.converters;
 import java.net.*;
 import java.io.*;
+import java.nio.charset.*;
 import java.util.regex.Pattern;
 
 /** A class for converting a gophermap to HTML. */
@@ -110,8 +111,9 @@ public class GophermapConverter extends TextLikeConverter implements Converter
 
   /** Convert the plain text file to HTML. */ 
   @Override
-  public String toHtml (String text)
+  public String toHtml (byte[] content, Charset charset)
     {
+    String text = new String (content, charset);
     StringBuffer sb = new StringBuffer();
     String lines[] = text.split ("\n");
     sb.append ("<html><head><body><pre>\n");

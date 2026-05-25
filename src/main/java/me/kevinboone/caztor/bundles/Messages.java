@@ -25,9 +25,11 @@ public class Messages extends ListResourceBundle
     {"actual_size", "Actual size"},
     {"already_bookmarked", "Page already bookmarked"},
     {"already_subscribed", "Already subscribed"},
+    {"author", "Author"},
     {"bookmark_added", "Bookmark added"},
     {"cancelled", "Cancelled"},
     {"could_not_parse_uri", "Could not parse URI"},
+    {"description", "Description"},
     {"done", "Done"},
     {"downloaded", "Downloaded"},
     {"downloading", "Downloading..."},
@@ -58,6 +60,8 @@ public class Messages extends ListResourceBundle
     {"no_certinfo", "No certificate information is available for this page"},
     {"no_info_avail", "No more information available"},
     {"no_stream_player", "No stream player application is defined in the configuration"},
+    {"open_anyway", "Open anyway"},
+    {"open_book", "Open book"},
     {"password_empty", "'Password' field cannot be empty"},
     {"page_not_remote", "This page is not from a remote server"},
     {"parsing_as_atom", "Parsing the response as an Atom feed"},
@@ -76,6 +80,7 @@ public class Messages extends ListResourceBundle
     {"streamed", "Streamed"},
     {"streaming", "Streaming..."},
     {"stream_interrupted", "Stream playback interrupted"},
+    {"title", "Title"},
     {"too_many_redirects", 
        "Request was redirected too many times: there might be a redirection loop"},
     {"unknown", "Unknown"},
@@ -83,6 +88,8 @@ public class Messages extends ListResourceBundle
     {"unknown_url", "Unknown URL"},
     {"unsup_encoding_resp", "Server returned a response with an unsupported encoding"},
     {"wrote_file", "Wrote file"},
+    {"zipfile_format_unknown", "This is a plain zipfile, not a format recognized by Caztor"},
+    {"zipfile_no_path", "A zipfile: URL must have a path component"}
     };
 
   @Override

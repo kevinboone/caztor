@@ -1,5 +1,12 @@
 # Caztor release notes
 
+## Caztor 1.0.3
+
+- Preliminary support for [Gempub and MBook e-books](gempub_support.md)
+- Preliminary support for Spartan data entry prompts
+- The Gemtext link character is now configurable, by selecting from
+  a drop-down list in the _Settings_ dialog (_Appearance_ tab)
+
 ## Caztor 1.0.2
 
 - Preliminary support for the Kepler protocol

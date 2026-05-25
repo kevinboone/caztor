@@ -56,6 +56,10 @@ public class CaztorURLStreamHandlerFactory implements URLStreamHandlerFactory
       {
       return new DemarkusURLStreamHandler();
       }
+    else if ("zipfile".equals(protocol)) 
+      {
+      return new ZipfileURLStreamHandler();
+      }
     return null;
     }
   }

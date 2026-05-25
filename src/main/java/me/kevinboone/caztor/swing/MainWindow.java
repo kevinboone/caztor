@@ -21,6 +21,7 @@ import java.net.*;
 import java.io.*;
 import java.time.Instant;
 import java.util.*;
+import java.nio.charset.*;
 import java.util.stream.Collectors;
 import me.kevinboone.caztor.Version;
 import me.kevinboone.caztor.Defaults;
@@ -1394,6 +1395,7 @@ void ensureFeedManagerDialogVisible()
     {
     Logger.in();
     String mime = gc.getMime();
+
     baseUri = fullUrl;
     if (Logger.isDebug())
       Logger.log (getClass().getName(), Logger.DEBUG, "Content is " + mime);
@@ -1436,6 +1438,18 @@ void ensureFeedManagerDialogVisible()
       //   one is not. Just invoke the converter.
       String encoding = FileUtil.getEncodingFromMime (mime);
       renderAtom (gc.getContent(), encoding);
+      updateUIForNewPage (fullUrl, gc, preserveFwdLinks);
+      }
+    else if (mime.startsWith ("application/gpub+zip") || urlStr.endsWith (".gpub"))
+      {
+      String encoding = FileUtil.getEncodingFromMime (mime);
+      renderZip (gc.getContent(), encoding);
+      updateUIForNewPage (fullUrl, gc, preserveFwdLinks);
+      }
+    else if (mime.startsWith ("application/mbook+zip") || urlStr.endsWith (".mbook"))
+      {
+      String encoding = FileUtil.getEncodingFromMime (mime);
+      renderZip (gc.getContent(), encoding);
       updateUIForNewPage (fullUrl, gc, preserveFwdLinks);
       }
     else if (mime.startsWith ("text/xml") 
@@ -1799,7 +1813,6 @@ void ensureFeedManagerDialogVisible()
       else if (uri.getProtocol().equals ("spartan"))
 	{
 	loadFromUri (uri, null, false, 0);
-	//baseUri = uri;
 	}
       else if (uri.getProtocol().equals ("gopher"))
 	{
@@ -1815,29 +1828,28 @@ void ensureFeedManagerDialogVisible()
               {
 	      loadFromUri (uri, str, false, 0); 
               } catch (Exception e){}
-	  //  baseUri = uri;
 	    }
           }
         else
           {
 	  loadFromUri (uri, null, false, 0);
-	  //baseUri = uri;
           }
 	}
       else if (uri.getProtocol().equals ("nex"))
 	{
 	loadFromUri (uri, null, false, 0);
-	//baseUri = uri;
 	}
       else if (uri.getProtocol().equals ("about"))
 	{
 	loadFromUri (uri, null, false, 0);
-	//baseUri = uri;
 	}
       else if (uri.getProtocol().equals ("file"))
 	{
 	loadFromUri (uri, null, false, 0);
-	//baseUri = uri;
+	}
+      else if (uri.getProtocol().equals ("zipfile"))
+	{
+	loadFromUri (uri, null, false, 0);
 	}
       else
 	{
@@ -2647,16 +2659,16 @@ void ensureFeedManagerDialogVisible()
       {
       try
         {
-	String stringForm;
 	Logger.log (getClass().getName(), Logger.DEBUG, 
           "renderToHtml(), Encoding is " + encoding);
-	if (encoding != null && encoding.length() > 0)
-	  stringForm = new String (content, encoding);
-	else
-	  stringForm = new String (content);
-        return converter.toHtml (stringForm); 
+        Charset charset;
+        if (encoding == null || encoding.length() == 0)
+          charset = StandardCharsets.UTF_8;
+        else
+          charset = Charset.forName (encoding);
+        return converter.toHtml (content, charset); 
         }
-      catch (UnsupportedEncodingException e)
+      catch (UnsupportedCharsetException e)
         {
 	Logger.log (getClass().getName(), Logger.WARNING, 
           "renderToHtml(), Encoding is " + encoding);
@@ -2699,7 +2711,6 @@ void ensureFeedManagerDialogVisible()
     setHtml (renderToHtml (new AtomConverter(baseUri), content, encoding));
     Logger.out();
     }
-
 
 /*=========================================================================
   
@@ -2754,6 +2765,20 @@ void ensureFeedManagerDialogVisible()
     Logger.in();
     setHtml (renderToHtml (new MarkdownConverter (baseUri), 
       content, encoding));
+    Logger.out();
+    }
+
+/*=========================================================================
+  
+  renderZip
+
+  Convert the Zip index to HTML and display it
+
+=========================================================================*/
+  private void renderZip (byte[] content, String encoding)
+    {
+    Logger.in();
+    setHtml (renderToHtml (new ZipConverter(baseUri), content, encoding));
     Logger.out();
     }
 
@@ -3019,11 +3044,27 @@ void ensureFeedManagerDialogVisible()
       boolean preserveFwdLinks)
     {
     baseUri = fullUrl; 
-    setCaptionFromResponse (fullUrl, rc);
-    topBar.showUrl (fullUrl.toString());
+
+    String query = baseUri.getQuery();
+    if (query != null)
+      {
+      if (query.endsWith ("spartanprompt"))
+        {
+        String u = baseUri.toString();
+        u = u.replace ("?spartanprompt", "");
+        try
+          {
+          baseUri = new URL (u); 
+          }
+        catch (MalformedURLException e){}
+        }
+      }
+
+    setCaptionFromResponse (baseUri, rc);
+    topBar.showUrl (baseUri.toString());
     if (!preserveFwdLinks)
       {
-      linkStack.push (fullUrl);
+      linkStack.push (baseUri);
       linkStack.setTopToCurrent();
       }
 

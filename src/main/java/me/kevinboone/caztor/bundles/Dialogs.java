@@ -28,6 +28,10 @@ public class Dialogs extends ListResourceBundle
       "Gemtext line is paragraph"},
     {"appearance_settings_pane_gemtext_lineaspara_mnemonic", 
       KeyEvent.VK_L},
+    {"appearance_settings_pane_link_character", 
+      "Link character"},
+    {"appearance_settings_pane_link_character_mnemonic", 
+      KeyEvent.VK_N},
 
     {"attachidentitydialog_keystore_empty", "Keystore filename is blank"},
     {"attachidentitydialog_keystore_file", "Keystore file"},

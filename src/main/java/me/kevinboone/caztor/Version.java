@@ -18,6 +18,6 @@ public interface Version
   // General
 
   public final static String APP_NAME = "Caztor";
-  public final static String VERSION = "1.0.2";
+  public final static String VERSION = "1.0.3";
   }
 

@@ -21,11 +21,14 @@ import net.fellbaum.jemoji.*;
 */
 public class TextLikeConverter
   {
+  private static final Config config = Config.getConfig();
   protected URL baseURL;
+  protected String defltLink;
 
   public TextLikeConverter (URL baseURL)
     {
     this.baseURL = baseURL;
+    defltLink = config.getDefltLink(); 
     }
 
   public static boolean isImageUri (String uri)
@@ -56,10 +59,14 @@ public class TextLikeConverter
       return "📷";
     if (link.startsWith ("http"))
       return "🌍";
-    return "→";
-    }
+    return defltLink;    }
 
   protected String writeLink (String uri, String title)
+    {
+    return writeLink (uri, title, false);
+    }
+
+  protected String writeLink (String uri, String title, boolean spartanPrompt)
     {
     Config config = Config.getConfig();
     if (isImageUri (uri) && config.getGemtextInlineImages())
@@ -69,21 +76,27 @@ public class TextLikeConverter
            + rewriteLink (uri) + "\">" + getLinkIcon (uri, title) + " " 
              + escapeHtml (title) + "</a>"; 
       }
-    return "<a href=\"" + rewriteLink (uri) + "\">" + 
+    return "<a href=\"" + rewriteLink (uri, spartanPrompt) + "\">" + 
       getLinkIcon (uri, title) + " " + escapeHtml (title) + "</a>"; 
     } 
 
   /** Parse and convert a Gemtext link line. */
   protected String parseLink (String gem)
     {
+    return parseLink (gem, false);
+    }
+
+  /** Parse and convert a Gemtext link line. */
+  protected String parseLink (String gem, boolean spartanPrompt)
+    {
     String[] args = gem.split ("\\s+", 2);
     if (args.length >= 2)
       {
-      return writeLink (args[0], args[1]);
+      return writeLink (args[0], args[1], spartanPrompt);
       }
     else if (args.length == 1)
       {
-      return writeLink (args[0], args[0]);
+      return writeLink (args[0], args[0], spartanPrompt);
       }
     else
       {
@@ -92,10 +105,15 @@ public class TextLikeConverter
       }
     }
 
+  protected String rewriteLink (String link)
+    {
+    return rewriteLink (link, false);
+    }
+
   /** Given a link target, rewrite it to a complete link that can
       be parsed to a java.net.URL. This involves resolving it against the
       baseURL to allow for relative links, etc. */
-  protected String rewriteLink (String link)
+  protected String rewriteLink (String link, boolean spartanPrompt)
     {
     Logger.in();
     Logger.log (getClass().getName(), Logger.DEBUG, "old link=" + link);
@@ -103,10 +121,25 @@ public class TextLikeConverter
       {
       // I'm still not 100% sure about this
       URI newUri =  new URI (baseURL.toString());
-      newUri =  newUri.resolve(link); 
+      newUri =  newUri.resolve (link); 
+      boolean hasQuery = false;
+      if (spartanPrompt)
+        {
+        String q = newUri.getQuery();
+        if (q != null && q.length() > 0)
+          hasQuery = true;
+        }
       Logger.log (getClass().getName(), Logger.DEBUG, "new link=" + newUri);
       Logger.out();
-      return newUri.toString();
+      if (spartanPrompt) 
+        { 
+        if (hasQuery)
+          return newUri.toString() + "&spartanprompt";
+        else
+          return newUri.toString() + "?spartanprompt";
+        }
+      else
+        return newUri.toString();
       }
     catch (Exception e)
       {

@@ -10,6 +10,7 @@
 package me.kevinboone.caztor.converters;
 import java.net.*;
 import java.io.*;
+import java.nio.charset.*;
 import java.util.regex.Pattern;
 
 /** A class for converting plain text to HTML. Mostly we just wrap up the
@@ -43,8 +44,9 @@ public class TextConverter implements Converter
 
   /** Convert the plain text file to HTML. */ 
   @Override
-  public String toHtml (String text)
+  public String toHtml (byte[] content, Charset charset)
     {
+    String text = new String (content, charset);
     StringBuffer sb = new StringBuffer();
     String lines[] = text.split ("\n");
     sb.append ("<html><head><body><pre>\n");

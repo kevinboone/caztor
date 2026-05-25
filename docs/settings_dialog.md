@@ -30,6 +30,12 @@ small extra space after each Gemtext line, treating it as a paragraph.
 This usually isn't necessary, because most authors insert additional
 blank lines to create space.
 
+The setting _Link character_ controls how Caztor will display a link in
+a Gemtext document. Not all the symbols may display properly -- this depends
+on what fonts are installed. Links whose labels start with an emoji are
+not highlighted with the link character, because Caztor assumes that the
+emoji is highlight enough.
+
 ## Theme tab 
 
 The theme tab allow you to select one of the built-in themes, or provide

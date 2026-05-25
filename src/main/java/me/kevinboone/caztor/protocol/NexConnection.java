@@ -51,6 +51,12 @@ public class NexConnection extends URLConnection
     PrintStream pos = new PrintStream (os);
 
     pos.print (getURL().getPath().toString());
+    String q = getURL().getQuery();
+    if (q != null && q.length() > 0)
+      {
+      pos.print ("?"); 
+      pos.print (q); 
+      }
     pos.print ("\r\n"); 
     pos.flush();
 

@@ -2,7 +2,7 @@
 
 A Java-based graphical browser for Gemini and other 'small net' protocols
 
-Version 1.0.2, Kevin Boone, May 2026
+Version 1.0.3, Kevin Boone, May 2026
 
 **Note**  
 Caztor 1.0 is a development of JGemini, but it's radically different in many
@@ -448,4 +448,10 @@ Caztor version 1.0.2 -- May 2026
   shown to the user
 - Added File|Info menu command, to show information about the file being
   viewed
+
+Caztor version 1.0.3 -- May 2026
+
+- Preliminary support for Spartan data entry prompts
+- Preliminary support for Gempub and MBook e-books (see docs/gempub_support.md)
+- Make the Gemtext link character configurable
 

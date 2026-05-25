@@ -20,6 +20,8 @@ This is the built-in documentation for Caztor version 1.0.
 
 [Bookmark support](bookmarks.md)
 
+[Gempub and MBook e-book support](gempub_support.md)
+
 [Text prompts](text_prompts.md)
 
 [Identity](identity.md)
