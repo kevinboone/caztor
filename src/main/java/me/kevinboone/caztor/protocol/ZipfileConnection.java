@@ -90,7 +90,7 @@ public class ZipfileConnection extends URLConnection
         StringBuffer sb = new StringBuffer();
         for (GemLink link : indexLinks)
            {
-System.out.println ("u=" + link.getUri() + " t=" + link.getText());
+           //System.out.println ("u=" + link.getUri() + " t=" + link.getText());
            sb.append ("=> " + link.getUri() + " " + link.getText() + "\n");
            }
         is = new ByteArrayInputStream (new String (sb).getBytes(StandardCharsets.UTF_8));
